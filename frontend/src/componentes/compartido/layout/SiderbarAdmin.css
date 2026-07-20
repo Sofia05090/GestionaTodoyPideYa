@@ -1,6 +1,6 @@
 /*Estilos de la barra de navegacion*/
 
-/* Columna vertical con las 3 zonas (cabecera, nav y pie) */
+/* Columna vertical con las 3 zonas (cabeza, nav y pie) */
 .sidebar {
   display: flex;
   flex-direction: column; /*coloca las 3 zonas verticalmente */
@@ -14,7 +14,7 @@
   top: 0;
 }
 
-/*Cabeza */
+/* Cabeza */
 .sidebar-cabecera {
   display: flex;
   align-items: center;
