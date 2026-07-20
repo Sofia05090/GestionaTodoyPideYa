@@ -1,0 +1,41 @@
+/* index.css Estilos globales y variables del proyecto */
+
+:root {
+
+  /* colores de marca del negocio */
+  --color-primario:        #E65C00;  /* Naranja — botones, acentos */
+  --color-primario-oscuro: #BF4900;  /* Naranja más oscuro al hacer hover */
+  --color-secundario:      #1A1A2E;  /* Azul noche — barra del admin */
+  --color-acento:          #F5A623;  /* Amarillo dorado — detalles y alertas */
+
+  /*estados de los pedidos (se ven en las tarjetas)  */
+  --color-pendiente:  #F59E0B;  /* Amarillo  — el pedido llegó, espera cocina */
+  --color-preparando: #3B82F6;  /* Azul      — la cocina ya lo está haciendo */
+  --color-listo:      #10B981;  /* Verde      — sale a la mesa */
+  --color-entregado:  #6B7280;  /* Gris       — ciclo cerrado */
+
+  /*colores neutros de la interfaz */
+  --color-fondo:       #F8F7F4;  /* Fondo general, casi blanco cálido */
+  --color-superficie:  #FFFFFF;  /* Fondo de tarjetas y modales */
+  --color-borde:       #E5E7EB;  /* Líneas divisoras suaves */
+  --color-texto:       #111827;  /* Texto principal, casi negro */
+  --color-texto-suave: #6B7280;  /* Texto secundario, etiquetas, hints */
+
+  /*fuente*/
+  --fuente-principal: "Inter", "Segoe UI", system-ui, sans-serif;
+
+  --radio-borde:  8px;
+  --sombra-card:  0 1px 3px rgba(0,0,0,0.10);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fuente-principal);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
