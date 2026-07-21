@@ -3,6 +3,8 @@ import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
+import BotonPrimario from "../../compartido/ui/BotonPrimario";
+import InputCampo from "../../compartido/ui/InputCampo";
 import "./LoginAdmin.css";
 
 function LoginAdmin() {
@@ -15,7 +17,7 @@ function LoginAdmin() {
   const navegar = useNavigate();
   const auth = getAuth();
 
-  //envio del formulario evitamos que el navegador recargue la página
+  //envio del formulario, evitamos que el navegador recargue la página
   async function manejarLogin(evento) {
     evento.preventDefault();
     setCargando(true);
@@ -36,7 +38,7 @@ function LoginAdmin() {
   return (
     <div className="login-contenedor">
       <div className="login-card">
-        {/* ── Ícono del negocio ────────────────────────── */}
+        {/* Ícono */}
         <div className="login-icono-contenedor">
           <ChefHat size={30} color="white" />
         </div>
@@ -47,39 +49,38 @@ function LoginAdmin() {
         </p>
 
         <form onSubmit={manejarLogin} className="login-formulario">
-          <div className="campo-grupo">
-            <label htmlFor="correo">Correo</label>
-            <input
-              id="correo"
-              type="email"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
-              placeholder="admin@gmail.com"
-              required
-            />
-          </div>
+           <InputCampo
+            etiqueta="Correo electrónico"
+            id="correo"
+            tipo="email"
+            valor={correo}
+            alCambiar={(e) => setCorreo(e.target.value)}
+            placeholder="admin@gmail.com"
+            requerido
+          />
 
-          <div className="campo-grupo">
-            <label htmlFor="contrasena">Contraseña</label>
-            <input
-              id="contrasena"
-              type="password"
-              value={contrasena}
-              onChange={(e) => setContrasena(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <InputCampo
+            etiqueta="Contraseña"
+            id="contrasena"
+            tipo="password"
+            valor={contrasena}
+            alCambiar={(e) => setContrasena(e.target.value)}
+            placeholder="••••••••"
+            requerido
+          />
 
           {/*aparece si Firebase rechaza las credenciales */}
           {error && <p className="login-error">{error}</p>}
 
-          <button type="submit" className="boton-login" disabled={cargando}>
-            {cargando ? "Ingresando..." : "Iniciar sesión"}
-          </button>
+          {/*boton Primario maneja el gradiente y el texto de carga*/}
+          <BotonPrimario
+            texto="Iniciar sesión"
+            cargando={cargando}
+            ancho="completo"
+          />
           
         </form>
-
+        {/*de momento, sin funcionalidad */}
         <p className="login-pie">
           ¿No tienes cuenta?{" "}
           <span className="login-pie-enlace">Regístrate</span>
