@@ -1,0 +1,30 @@
+/*estilos del boton primario, en el estilo base tiene un gradiente rojo a naranja,
+si el diseño cambia, se edita aqui y se actualiza automaticamente en todos los componentes */
+
+.boton-primario {
+    padding: 0.70rem;
+    background: linear-gradient(90deg, #E8533A, #F5A623);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.3rem;
+}
+
+/* ocupa todo el ancho del contenedor padre */
+.boton-primario--completo {
+    width: 100%;
+}
+
+/* Al pasar el mouse se vuelve un poco más opaco */
+.boton-primario:hover:not(:disabled) {
+    opacity: 0.92;
+}
+
+.boton-primario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
