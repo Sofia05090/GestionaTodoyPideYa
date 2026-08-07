@@ -23,5 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+<<<<<<< HEAD
 # Env files
+=======
+# variables de entorno - no se suben al repositorio por cuestiones de seguridad
+>>>>>>> a104040e108467b4702724d62516291f9e91a433
 .env
