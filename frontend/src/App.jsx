@@ -3,12 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./componentes/compartido/layout/AdminLayout";
 import LoginAdmin  from "./componentes/admin/autenticacion/LoginAdmin";
 import Dashboard   from "./componentes/admin/dashboard/Dashboard";
+import Inicio from "./componentes/cliente/inicio/Inicio";
 
 function App() {
   
   return(
 <BrowserRouter>
       <Routes>
+
+        <Route path="/" element={<Inicio />} />
 
         {/* Ruta que redirige al login */}
         <Route path="/" element={<Navigate to="/admin/login" replace />} />

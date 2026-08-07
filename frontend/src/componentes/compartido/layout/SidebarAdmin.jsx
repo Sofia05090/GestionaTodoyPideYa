@@ -1,6 +1,8 @@
 //Barra de navegacion
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../compartido/layout/"
+import "./SidebarAdmin.css";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebase/config";
 //se importa iconos
 import {
   LayoutDashboard, // cuadrícula
