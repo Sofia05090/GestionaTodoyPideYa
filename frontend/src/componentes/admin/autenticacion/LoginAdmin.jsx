@@ -1,7 +1,8 @@
 // Pantalla de inicio de sesión
-import { useState }                            from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate }                         from "react-router-dom";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebase/config";
+import { useNavigate } from "react-router-dom";
 import "./LoginAdmin.css";
 
 function LoginAdmin() {
@@ -13,7 +14,7 @@ function LoginAdmin() {
   const [error,      setError]      = useState("");    // mensaje al usuario
 
   const navegar = useNavigate();
-  const auth    = getAuth();
+
 
   //envío del formulario evitamos que el navegador recargue la página
   async function manejarLogin(evento) {
