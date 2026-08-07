@@ -1,6 +1,6 @@
-//Barra de navegacion
+//Barra de navegacion del admin
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../compartido/layout/"
+import "../../compartido/layout/AdminLayout.css";
 //se importa iconos
 import {
   LayoutDashboard, // cuadrícula
