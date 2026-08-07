@@ -1,0 +1,41 @@
+/* estilos campo de formulario reutilizable,
+se usa en todos los formularios de la app 
+(login, agregar plato, editar inventario, etc.)*/
+
+/* Contenedor: contiene la etiqueta de arriba y el input de abajo */
+.input-campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+/* etiqueta del campo */
+.input-campo-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* estilos del input */
+.input-campo-input {
+  padding: 0.75rem 1rem;
+  background-color: #F0F0F0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--fuente-principal);
+  color: #333;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.input-campo-input:focus {
+  outline: none;
+  background-color: #E8E8E8;
+}
+
+/* Placeholder del campo */
+.input-campo-input::placeholder {
+  color: #AAAAAA;
+}
