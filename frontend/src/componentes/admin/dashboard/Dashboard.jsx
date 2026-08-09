@@ -1,4 +1,12 @@
 // panel del administrador
+<<<<<<< HEAD
+// Dashboard temporal - pendiente de implementar
+function Dashboard() {
+  return (
+    <div style={{ padding: "2rem" }}>
+      <h1>Dashboard</h1>
+      <p>Esta sección está en construcción 🚧</p>
+=======
 
 // Primera pantalla que ve el admin después de iniciar sesión.
 // Tiene secciones:
@@ -162,6 +170,7 @@ function TarjetaPedido({ pedido, traducirEstado }) {
       <p className="pedido-total">
         Total: ${pedido.total?.toLocaleString("es-CO")}
       </p>
+>>>>>>> a104040e108467b4702724d62516291f9e91a433
     </div>
   );
 }

@@ -1,6 +1,12 @@
 //Barra de navegacion del admin
 import { NavLink, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
+import "./SidebarAdmin.css";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebase/config";
+=======
 import "../../compartido/layout/AdminLayout.css";
+>>>>>>> a104040e108467b4702724d62516291f9e91a433
 //se importa iconos
 import {
   LayoutDashboard, // cuadrícula
