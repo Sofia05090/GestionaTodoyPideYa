@@ -1,16 +1,11 @@
 // Pantalla de inicio de sesión
 import { useState } from "react";
-<<<<<<< HEAD
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
-import { useNavigate } from "react-router-dom";
-=======
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import InputCampo from "../../compartido/ui/InputCampo";
->>>>>>> a104040e108467b4702724d62516291f9e91a433
 import "./LoginAdmin.css";
 
 function LoginAdmin() {
@@ -21,11 +16,6 @@ function LoginAdmin() {
   const [error, setError] = useState(""); // mensaje al usuario
 
   const navegar = useNavigate();
-<<<<<<< HEAD
-
-=======
-  const auth = getAuth();
->>>>>>> a104040e108467b4702724d62516291f9e91a433
 
   //envio del formulario, evitamos que el navegador recargue la página
   async function manejarLogin(evento) {
