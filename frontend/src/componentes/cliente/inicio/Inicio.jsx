@@ -6,7 +6,7 @@ import "./Inicio.css";
 
 function Inicio() {
 
-    const navegar = useNavigate(); 
+    const navegar = useNavigate(); //para poder realizar cambios de pantallas entre incio, menu y escanear qr
 
     return (
 
