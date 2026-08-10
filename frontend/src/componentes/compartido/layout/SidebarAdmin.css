@@ -165,6 +165,12 @@
 
 /* cambia el color de fondo y el color del texto al pasar el mouse por encima */
 .sidebar-boton-logout:hover {
+<<<<<<< HEAD
   background-color: #F4A261;
   color:#1A1A1A;
 }
+=======
+  background-color: rgba(255, 255, 255, 0.07);
+  color: white;
+}
+>>>>>>> d6ade0ddc8219e9ac9910110c2044d75c70a4e06
