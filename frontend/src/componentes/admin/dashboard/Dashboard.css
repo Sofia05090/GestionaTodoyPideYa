@@ -1,1 +1,142 @@
 /*estilos del panel principal del admin*/
+.dashboard-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Encabezado de la sección */
+.dashboard-encabezado h1 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #E63946;
+}
+
+.dashboard-encabezado p {
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+  margin-top: 2px;
+}
+
+/*fila de metricas*/
+/* si caben 3 tarjetas las pone en fila; si la pantalla es pequeña las apila automaticamente */
+.dashboard-metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* tarjeta icono a la izquierda, numero y etiqueta a la derecha */
+.metrica-card {
+  background: var(--color-superficie);
+  flex-direction: row-reverse;
+  justify-content: space-between; /* espacio entre icono y numero/etiqueta */
+  align-items: flex-start; /* alinea el contenido al inicio de la tarjeta */
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.metrica-icono {
+  color: var(--color-texto-suave);
+  flex-shrink: 0; /* evita que el icono se reduzca de tamaño */
+}
+
+.metrica-numero {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  line-height: 1;
+}
+
+.metrica-etiqueta {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+  margin-top: 2px;
+
+}
+
+/* Sección de pedidos activos */
+.dashboard-pedidos h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-texto);
+  margin-bottom: 1rem;
+}
+
+/*texto de estado cargando o sin pedidos */
+.estado-texto {
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+/* tarjetas de pedidos */
+.lista-pedidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/*Tarjeta individual de pedido y contiene la línea naranja a la izquierda que se visualiza indica que es un pedido activo del negocio */
+.tarjeta-pedido {
+  background: var(--color-superficie);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: var(--sombra-card);
+  border-left: 4px solid var(--color-primario);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Mesa a la izquierda, estado a la derecha */
+.pedido-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pedido-mesa {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-texto);
+}
+
+/*chips de estado que tiene su color para identificarlo */
+.pedido-estado {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.estado-pending   { background: #FEF3C7; color: #92400E; } /* amarillo que indica pendiente*/
+.estado-preparing { background: #DBEAFE; color: #1E40AF; } /* azul que indica en preparación*/
+.estado-ready     { background: #D1FAE5; color: #065F46; } /* verde que indica listo*/
+.estado-delivered { background: #F3F4F6; color: #6B7280; } /* gris que indica entregado*/
+
+/* Lista de platos del pedido */
+.pedido-items {
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--color-texto);
+  line-height: 1.8;
+}
+
+/* Nota del cliente */
+.pedido-nota {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+  font-style: italic;
+}
+
+/* Total en naranja alineado hacia la derecha */
+.pedido-total {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-primario);
+  text-align: right;
+}

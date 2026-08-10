@@ -13,10 +13,10 @@ function BotonPrimario({
     <button
       type={tipo}
       onClick={alHacer}
-      disabled={cargando}  // desactiva el botón mientras carga
+      disabled={cargando}  // desactiva el boton mientras carga
       className={`boton-primario ${ancho === "completo" ? "boton-primario--completo" : ""}`}
     >
-      {/* Si está cargando lo mostramos*/}
+      {/* Si esta cargando lo mostramos*/}
       {cargando ? "Cargando..." : texto}
     </button>
   );
