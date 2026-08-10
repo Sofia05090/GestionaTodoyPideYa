@@ -1,5 +1,5 @@
 // Pantalla de inicio de sesión
-import { useState } from "react";
+import {useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
@@ -9,22 +9,22 @@ import "./LoginAdmin.css";
 
 function LoginAdmin() {
   //formulario
-  const [correo, setCorreo] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  const [correoAdmin, setCorreo] = useState(""); // estado que guarda el correo del admin
+  const [contrasena, setContrasena] = useState(""); // estado que guarda la contraseña del admin
   const [cargando, setCargando] = useState(false); // evita doble clic
   const [error, setError] = useState(""); // mensaje al usuario
 
   const navegar = useNavigate();
   const auth = getAuth();
 
-  //envio del formulario, evitamos que el navegador recargue la página
+  //envio del formulario, evitamos que el navegador recargue la pagina
   async function manejarLogin(evento) {
     evento.preventDefault();
     setCargando(true);
     setError("");
 
     try {
-      await signInWithEmailAndPassword(auth, correo, contrasena);
+      await signInWithEmailAndPassword(auth, correoAdmin, contrasena);
       // si el login exitoso, vamos al panel principal
       navegar("/admin/dashboard");
     } catch (errorDeFirebase) {
@@ -53,10 +53,10 @@ function LoginAdmin() {
             etiqueta="Correo electrónico"
             id="correo"
             tipo="email"
-            valor={correo}
+            valor={correoAdmin}
             alCambiar={(e) => setCorreo(e.target.value)}
             placeholder="admin@gmail.com"
-            requerido
+            
           />
 
           <InputCampo
@@ -66,7 +66,7 @@ function LoginAdmin() {
             valor={contrasena}
             alCambiar={(e) => setContrasena(e.target.value)}
             placeholder="••••••••"
-            requerido
+
           />
 
           {/*aparece si Firebase rechaza las credenciales */}
