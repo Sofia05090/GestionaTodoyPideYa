@@ -1,0 +1,54 @@
+.inicio-contenedor{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+.inicio-titulo{
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+
+}
+
+.inicio-subtitulo{
+
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.inicio-boton{
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+}
+
+.inicio-boton-pedido{
+
+    background-color: white;
+    color: #ff4d4f;
+
+}
+
+.inicio-boton-qr{
+
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+
+}

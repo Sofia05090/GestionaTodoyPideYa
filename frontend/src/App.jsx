@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./componentes/compartido/layout/AdminLayout";
 import LoginAdmin  from "./componentes/admin/autenticacion/LoginAdmin";
 import Dashboard   from "./componentes/admin/dashboard/Dashboard";
+import Inicio from "./componentes/cliente/inicio/Inicio";
+import Menu from "./componentes/cliente/menu/Menu"
 
 function App() {
   
@@ -10,8 +12,10 @@ function App() {
 <BrowserRouter>
       <Routes>
 
+        <Route path="/" element={<Inicio />} />
+
         {/* Ruta que redirige al login */}
-        <Route path="/" element={<Navigate to="/admin/login" replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
 
         {/*pantalla completa sin sidebar (login)*/}
         <Route path="/admin/login" element={<LoginAdmin />} />
@@ -25,8 +29,13 @@ function App() {
             </AdminLayout>
           }
         />
-        </Routes>
-        </BrowserRouter>
+
+        {/*las rutas de panel del cliente */}
+        <Route path="/menu" element={<Menu />}/>
+
+
+      </Routes>    
+    </BrowserRouter>
   );
 }
 
