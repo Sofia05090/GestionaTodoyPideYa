@@ -1,12 +1,12 @@
 // panel del administrador
 
-// Primera pantalla que ve el admin después de iniciar sesión.
+// Primera pantalla que ve el admin después de iniciar sesión
 // Tiene secciones:
 //    Métricas del día
 //    Lista de pedidos activos en tiempo real
 //
-// Solo mostramos pedidos "pending" o "preparing".
-// "ready" y "delivered" se manejan en otro módulo.
+// Solo mostramos pedidos "pending" o "preparing"
+// "ready" y "delivered" se manejan en otro módulo
 
 import { useEffect, useState } from "react";
 import { db } from "../../../firebase/config";
@@ -16,25 +16,25 @@ import {
   where,
   onSnapshot,
   orderBy,
-} from "firebase/firestore";
-import { ShoppingBag, DollarSign, Clock } from "lucide-react";
-import "./Dashboard.css";
+} from "firebase/firestore"; //estas importaciones son para consultar la base de datos de Firestore
+import { ShoppingBag, DollarSign, TrendingUp } from "lucide-react"; // estos iconos se usan en la parte de métricas del dashboard
+import "./Dashboard.css"; 
 
 function Dashboard() {
   //Estado del componente
   const [pedidosActivos, setPedidosActivos] = useState([]);
-  const [totalVentasHoy, setTotalVentasHoy] = useState(0);
+  const [totalVentasHoy, setTotalVentasHoy] = useState(0); // la variable setTotalVentasHoy no esta en uso, hasta cuando se implemente el panel de estadisticas le daremos una funcion para calcular el total de ventas del dia pero por ahora se inicializa en 0
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     // Consultamos pedidos activos ordenados del más reciente para mostrarlos
     const consultaPedidosActivos = query(
-      collection(db, "ordenes"),
-      where("status", "in", ["pending", "preparing"]),
-      orderBy("createdAt", "desc"),
+      collection(db, "pedidos"),
+      where("status", "in", ["pending", "preparing"]), // traemos los pedidos que esten en espera o en preparacion
+      orderBy("createdAt", "desc"), //con el createdAt ordenamos los pedidos del mas reciente al mas antiguo y con desc los organizamos de manera descendente
     );
 
-    // con onSnapshot mantenemos una conexión permanente con Firestore
+    // con onSnapshot mantenemos una conexión permanente con Firestore, porque se ejecuta cada vez que hay un cambio en la base de datos
     const detenerEscucha = onSnapshot(consultaPedidosActivos, (resultado) => {
       // doc.id es el ID del documento; doc.data() trae los campos
       const listaNueva = resultado.docs.map((doc) => ({
@@ -42,17 +42,17 @@ function Dashboard() {
         ...doc.data(),
       }));
 
-      setPedidosActivos(listaNueva);
+      setPedidosActivos(listaNueva); //se actualiza el estado de pedidosActivos con la lista nueva
       setCargando(false); //le quitamos el Cargando
     });
 
-    // Detener la escucha evita errores de memoria después de cerrar sesión.
+    // Detener la escucha evita errores de memoria después de cerrar sesion
     return () => detenerEscucha();
   }, []);
 
   // Traducción de estados para la UI
-  // Los estados en Firestore están en inglés porque fueron definidos asi en la base de datos (pending, preparing) ready y delivered se manejan en otro módulo
-  // Esta función los convierte al español para mostrarlos.
+  // Los estados en Firestore están en inglés porque fueron definidos asi en la base de datos (pending, preparing) ready y delivered se manejan en otro modulo
+  // Esta función los convierte al español para mostrarlos
   function traducirEstado(estado) {
     const traducciones = {
       pending: "En espera",
@@ -79,28 +79,28 @@ function Dashboard() {
       {/*Tarjetas de métricas*/}
       <section className="dashboard-metricas">
         <div className="metrica-card">
-          <ShoppingBag size={24} className="metrica-icono" />
-          <div>
-            <p className="metrica-numero">{pedidosActivos.length}</p>
-            <p className="metrica-etiqueta">Pedidos activos</p>
-          </div>
-        </div>
-
-        <div className="metrica-card">
           <DollarSign size={24} className="metrica-icono" />
           <div>
+            <p className="metrica-etiqueta">Ventas del Dia</p>
             <p className="metrica-numero">
               ${totalVentasHoy.toLocaleString("es-CO")}
             </p>
-            <p className="metrica-etiqueta">Ventas hoy</p>
           </div>
         </div>
 
         <div className="metrica-card">
-          <Clock size={24} className="metrica-icono" />
+          <ShoppingBag size={24} className="metrica-icono" />
           <div>
+            <p className="metrica-etiqueta">Pedidos activos</p>
+            <p className="metrica-numero">{pedidosActivos.length}</p>
+          </div>
+        </div>
+
+        <div className="metrica-card">
+          <TrendingUp size={24} className="metrica-icono" />
+          <div>
+            <p className="metrica-etiqueta">Plato Top</p>
             <p className="metrica-numero">{pedidosEnEspera}</p>
-            <p className="metrica-etiqueta">En espera</p>
           </div>
         </div>
       </section>
@@ -155,7 +155,7 @@ function TarjetaPedido({ pedido, traducirEstado }) {
 
       {/* Nota del cliente (solo si escribió algo) */}
       {pedido.customerNotes && (
-        <p className="pedido-nota">📝 {pedido.customerNotes}</p>
+        <p className="pedido-nota"> {pedido.customerNotes}</p>
       )}
 
       {/* Total alineado a la derecha */}

@@ -1,17 +1,23 @@
 /*Estilos de la barra de navegacion*/
-
 /* Columna vertical con las 3 zonas (cabeza, nav y pie) */
 .sidebar {
   display: flex;
   flex-direction: column; /*coloca las 3 zonas verticalmente */
   height: 100vh;
   width: 260px;
-  background-color: var(--color-secundario);
-  color: white;
+  background-color: var(--color-fondo);
   padding: 1.5rem 1rem;
   gap: 0.5rem;
-  position: sticky; /*el sidebar se queda fijo aunque el contenido del panel haga scroll */
-  top: 0;
+  border-left: 1px solid var(--color-borde);
+  position: fixed; /*se corrije el sidebar y se queda fijo aunque el contenido del panel haga scroll */
+  right: 0; /*se fija a la derecha de la pantalla */
+  top: 0; /*se fija a la parte superior de la pantalla */
+  bottom: 0; /*se fija a la parte inferior de la pantalla */
+}
+/*se modifica el contenedor del dashboard */
+.dashboard-contenedor {
+  margin-right: 260px; /*deja espacio para el sidebar */
+  padding: 1rem; /*se agrega un padding para que el contenido no quede pegado al borde */
 }
 
 /* Cabeza */
@@ -20,15 +26,15 @@
   align-items: center;
   gap: 0.75rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-borde);
+  margin-bottom: 0.55rem;
 }
 
 /* icono cuadrado naranja */
 .sidebar-logo {
   width: 44px;
   height: 44px;
-  background-color: var(--color-primario);
+  background: linear-gradient(90deg, #EA524B, #F49E60);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -38,15 +44,15 @@
 }
 
 .sidebar-nombre-negocio {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: white;
+  font-size: 1.04rem;
+  font-weight: 530;
+  color: var(--color-texto);
   line-height: 1.2;
 }
 
 .sidebar-rol {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-borde);
 }
 
 /*navegacion */
@@ -57,6 +63,7 @@
   flex: 1;
 }
 
+
 .sidebar-link {
   display: flex;
   align-items: center;
@@ -64,34 +71,33 @@
   padding: 0.65rem 0.85rem;
   border-radius: var(--radio-borde);
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--color-texto-suave);
   text-decoration: none;
   transition:
     background-color 0.15s,
     color 0.15s;
 }
-
+/* cambia el color de fondo y el color del texto al pasar el mouse por encima */
 .sidebar-link:hover {
-  background-color: rgba(255, 255, 255, 0.07);
-  color: white;
+  background-color: #F49E60;
+  color: #1A1A1A;
 }
+
 
 .sidebar-link--activo {
-  background-color: var(--color-primario);
+  background: linear-gradient(90deg, #EA524B, #F49E60);
   color: white;
 }
 
-.sidebar-link--activo:hover {
-  background-color: var(--color-primario-oscuro);
-}
+
 
 /*pie de la barra de navegacion */
 .sidebar-pie {
-  display: flex;
+  width: 100;
   flex-direction: column;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-borde);
 }
 
 /* avatar, nombre y correo del admin */
@@ -113,26 +119,28 @@
   font-size: 0.85rem;
   font-weight: 600;
   flex-shrink: 0;
+  margin-bottom: 1rem;
 }
 
 .sidebar-admin-textos {
   min-width: 0;
 }
-
+/* Nombre del admin */
 .sidebar-admin-nombre {
   font-size: 0.85rem;
   font-weight: 600;
-  color: white;
+  color: #1A1A1A;
   line-height: 1.2;
 }
 
 /* Si el correo es muy largo se corta con puntos suspensivos  */
 .sidebar-admin-correo {
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #1A1A1A;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 1rem;
 }
 
 /* Botón de cerrar sesión transparente, solo texto y ícono */
@@ -143,8 +151,8 @@
   width: 100%;
   padding: 0.6rem 0.85rem;
   background: transparent;
-  color: rgba(255, 255, 255, 0.55);
-  border: none;
+  color: #1A1A1A;
+  border: 1px solid var(--color-borde);
   border-radius: var(--radio-borde);
   font-size: 0.85rem;
   font-family: var(--fuente-principal);
@@ -155,7 +163,14 @@
   text-align: left;
 }
 
+/* cambia el color de fondo y el color del texto al pasar el mouse por encima */
 .sidebar-boton-logout:hover {
+<<<<<<< HEAD
+  background-color: #F4A261;
+  color:#1A1A1A;
+}
+=======
   background-color: rgba(255, 255, 255, 0.07);
   color: white;
 }
+>>>>>>> d6ade0ddc8219e9ac9910110c2044d75c70a4e06

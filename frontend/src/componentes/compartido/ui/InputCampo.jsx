@@ -1,8 +1,9 @@
 // formulario reutilizable
+import React from "react";
 import "./InputCampo.css";
 
 function InputCampo({
-    //props
+    //props que recibe el componente
     etiqueta,
     id,
     tipo = "text",
@@ -14,12 +15,12 @@ function InputCampo({
     return (
         <div className="input-campo-grupo">
 
-            {/*al hacer clic en él, se va al input */}
+            {/*al hacer clic en el, se va al input */}
             <label htmlFor={id} className="input-campo-label">
                 {etiqueta}
             </label>
 
-            {/* el input controlado por React ya el valor viene del estado del padre */}
+            {/* el input controlado por React ya que el valor viene del estado del padre */}
             <input
                 id={id}
                 type={tipo}
@@ -34,4 +35,4 @@ function InputCampo({
     );
 }
 
-export default InputCampo;
+export default InputCampo
