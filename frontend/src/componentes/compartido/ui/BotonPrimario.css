@@ -3,7 +3,7 @@ si el diseño cambia, se edita aqui y se actualiza automaticamente en todos los 
 
 .boton-primario {
     padding: 0.70rem;
-    background: linear-gradient(90deg, #E8533A, #F5A623);
+    background: linear-gradient(90deg, #EA524B, #F49E60);
     color: white;
     border: none;
     border-radius: 8px;
@@ -17,11 +17,6 @@ si el diseño cambia, se edita aqui y se actualiza automaticamente en todos los 
 /* ocupa todo el ancho del contenedor padre */
 .boton-primario--completo {
     width: 100%;
-}
-
-/* Al pasar el mouse se vuelve un poco más opaco */
-.boton-primario:hover:not(:disabled) {
-    opacity: 0.92;
 }
 
 .boton-primario:disabled {

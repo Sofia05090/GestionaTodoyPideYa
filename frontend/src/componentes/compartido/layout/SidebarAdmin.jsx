@@ -1,17 +1,17 @@
 //Barra de navegacion del admin
 import { NavLink, useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase/config";
-import "../../compartido/layout/AdminLayout.css";
-//se importa iconos
+import { signOut } from "firebase/auth";
+import "./SidebarAdmin.css";
+//se importa los iconos de lucide-react para el menu de navegacion del admin
 import {
-  LayoutDashboard, // cuadrícula
-  UtensilsCrossed, // cubiertos
-  ClipboardList, // portapapeles
-  History, // reloj
-  BarChart2, // barras
-  LogOut, // flecha
-  ChefHat, // gorro
+  LayoutDashboard, // cuadrícula del dashboard
+  UtensilsCrossed, // cubiertos de gestión de menu
+  ClipboardList, // portapapeles de pedidos activos
+  History, // reloj de historial
+  BarChart2, // barras de estadisticas
+  LogOut, // flecha de cerrar sesion
+  ChefHat, // logo gorro de chef
 } from "lucide-react";
 
 //Se crea la seccion para añadir un objeto
