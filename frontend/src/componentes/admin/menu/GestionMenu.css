@@ -1,0 +1,201 @@
+/* estilos de gestion del gestionmenu */
+
+/*Contenedor principal*/
+.gestion-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/*Encabezado: título izquierda, botón derecha*/
+.gestion-menu__encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.gestion-menu__encabezado h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.gestion-menu__encabezado p {
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+  margin-top: 2px;
+}
+
+/* ── Barra de filtros: buscador + selector ──────────────── */
+.gestion-menu__filtros {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: white;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  box-shadow: var(--sombra-card);
+}
+
+/* Buscador: ícono lupa + input que ocupa el espacio restante */
+.gestion-menu__buscador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.buscador__icono { color: var(--color-texto-suave); flex-shrink: 0; }
+
+.buscador__input {
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  font-family: var(--fuente-principal);
+  color: var(--color-texto);
+  width: 100%;
+  background: transparent;
+}
+
+.buscador__input::placeholder { color: #BBBBBB; }
+
+/* Selector de categoría */
+.gestion-menu__selector {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-family: var(--fuente-principal);
+  color: var(--color-texto);
+  background: white;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── Grid de tarjetas ───────────────────────────────────── */
+/* 3 columnas en pantallas grandes, se adapta en pantallas pequeñas */
+.gestion-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Texto cuando no hay platos o está cargando */
+.gestion-menu__estado {
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 3rem;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Modal de agregar / editar plato
+   ═══════════════════════════════════════════════════════════ */
+
+/* Fondo semitransparente que cubre toda la pantalla */
+.modal-fondo {
+  position: fixed;
+  inset: 0;                        /* top, right, bottom, left = 0 */
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;                    /* encima de todo lo demás */
+}
+
+/* Tarjeta blanca del modal */
+.modal-contenido {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto; /* scroll si el contenido es muy largo */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-titulo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.modal-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Para selector e input de archivo que no usan InputCampo */
+.modal-campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-campo-grupo label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.modal-selector {
+  padding: 0.75rem 1rem;
+  background-color: #F0F0F0;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--fuente-principal);
+  color: #333;
+  cursor: pointer;
+}
+
+.modal-input-archivo {
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+  font-family: var(--fuente-principal);
+}
+
+/* Checkbox de disponibilidad en fila */
+.modal-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--color-texto);
+  cursor: pointer;
+}
+
+.modal-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primario);
+  cursor: pointer;
+}
+
+/* Botones del modal: cancelar izquierda, guardar derecha */
+.modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modal-boton-cancelar {
+  padding: 0.75rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: var(--fuente-principal);
+  color: var(--color-texto-suave);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.modal-boton-cancelar:hover { background: var(--color-fondo); }

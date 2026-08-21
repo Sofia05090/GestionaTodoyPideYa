@@ -6,6 +6,7 @@ function InputCampo({
     //props que recibe el componente
     etiqueta,
     id,
+    nombre = id,
     tipo = "text",
     valor,
     alCambiar,
@@ -23,6 +24,7 @@ function InputCampo({
             {/* el input controlado por React ya que el valor viene del estado del padre */}
             <input
                 id={id}
+                name={nombre}
                 type={tipo}
                 value={valor}
                 onChange={alCambiar}
