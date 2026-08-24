@@ -1,0 +1,147 @@
+/* Estilos de la tarjeta de cada plato. */
+
+.tarjeta-plato {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--sombra-card);
+  overflow: hidden; /* mantiene la imagen dentro de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+
+.tarjeta-plato:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Imagen del plato. */
+.tarjeta-plato__imagen-contenedor {
+  position: relative; /* permite colocar el aviso sobre la imagen */
+  height: 200px;
+  background-color: #F5F5F5;
+}
+
+.tarjeta-plato__imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* adapta la imagen al espacio disponible */
+}
+
+/* Espacio que se muestra cuando no hay imagen */
+.tarjeta-plato__sin-imagen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aviso de disponibilidad en la esquina superior izquierda */
+.tarjeta-plato__chip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.chip--disponible { background: #22C55E; color: white; }
+.chip--agotado    { background: #EF4444; color: white; }
+
+/* Texto y boton de disponibilidad */
+.tarjeta-plato__cuerpo {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1; /* ocupa el espacio entre la imagen y el precio */
+}
+
+.tarjeta-plato__nombre {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.tarjeta-plato__categoria {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+}
+
+.tarjeta-plato__descripcion {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Botón para cambiar rápidamente la disponibilidad */
+.tarjeta-plato__toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: var(--fuente-principal);
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+  width: fit-content;
+}
+
+.toggle--disponible { background: #DCFCE7; color: #166534; }
+.toggle--agotado    { background: #FEE2E2; color: #991B1B; }
+
+.tarjeta-plato__toggle:hover { opacity: 0.8; }
+
+/* Precio y botones de editar y eliminar */
+.tarjeta-plato__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.tarjeta-plato__precio {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.tarjeta-plato__acciones {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botones pequeños para las acciones de la tarjeta */
+.tarjeta-plato__boton-icono {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-suave);
+  transition: background 0.15s, color 0.15s;
+}
+
+.tarjeta-plato__boton-icono:hover {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+/* El boton eliminar se vuelve rojo al pasar el cursor */
+.tarjeta-plato__boton-icono--eliminar:hover {
+  background: #FEE2E2;
+  color: #EF4444;
+  border-color: #FCA5A5;
+}

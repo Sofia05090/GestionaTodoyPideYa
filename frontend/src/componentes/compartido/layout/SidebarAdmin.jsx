@@ -1,7 +1,8 @@
-//Barra de navegacion del admin
+// Barra de navegacion del admin
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase/config";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import "./SidebarAdmin.css";
 //se importa los iconos de lucide-react para el menu de navegacion del admin
 import {
@@ -45,13 +46,24 @@ const LINKS_NAVEGACION = [
 
 function SidebarAdmin() {
   const navegar = useNavigate();
-  //cerrar sesion el signOut le dice a firebase que invalide la sesion y replace evita q el boton regrese al panel sin autenticacion
+  const [correoAdmin, setCorreoAdmin] = useState("");
+
+  // Firebase puede tardar un momento en recuperar la sesion despues de recargar
+  useEffect(() => {
+    const dejarDeEscuchar = onAuthStateChanged(auth, (usuario) => {
+      setCorreoAdmin(usuario?.email ?? "");
+    });
+
+    return () => dejarDeEscuchar();
+  }, []);
+
+  // Cerramos la sesion y volvemos a la pantalla de inicio de sesion
   async function cerrarSesion() {
     await signOut(auth);
     navegar("/admin/login", { replace: true });
   }
-  //correo del admin y su inicial
-  const correoAdmin = auth.currentUser?.email ?? "";
+
+  // Tomamos la primera letra del correo para mostrarla en el círculo.
   const inicialAvatar = correoAdmin.charAt(0).toUpperCase();
 
   return (
@@ -67,13 +79,13 @@ function SidebarAdmin() {
         </div>
       </div>
 
-      {/*Navegacion*/}
+      {/* Enlaces de navegación */}
       <nav className="sidebar-nav">
         {LINKS_NAVEGACION.map(({ ruta, etiqueta, Icono }) => (
           <NavLink
             key={ruta}
             to={ruta}
-            // isActive es true cuando la URL actual coincide con "ruta"
+            // marcamos el enlace de la pantalla actual
             className={({ isActive }) =>
               isActive ? "sidebar-link sidebar-link--activo" : "sidebar-link"
             }
