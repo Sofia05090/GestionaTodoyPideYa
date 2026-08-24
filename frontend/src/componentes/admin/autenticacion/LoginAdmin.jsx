@@ -1,12 +1,7 @@
 // Pantalla de inicio de sesión
-<<<<<<< HEAD
-import {useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-=======
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/config";
->>>>>>> d6ade0ddc8219e9ac9910110c2044d75c70a4e06
 import { useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
