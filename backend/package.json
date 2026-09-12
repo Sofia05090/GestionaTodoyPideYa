@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "API REST para puntos de venta y gestion de puesto de comidas",
   "main": "index.js",
-
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
