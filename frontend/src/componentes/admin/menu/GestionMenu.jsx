@@ -6,10 +6,6 @@
 //  se usa el Hook useCamposFormulario maneja todos los campos del formulario con un solo useState en vez de uno por cada campo
 
 import { useState, useEffect } from "react";
-import { db, storage }         from "../../../firebase/config";
-import {collection, addDoc, updateDoc,
-  deleteDoc, doc, onSnapshot, orderBy, query,} from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Search }                           from "lucide-react";
 // Son botones y campos que también usamos en otras pantallas
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
@@ -18,8 +14,10 @@ import InputCampo    from "../../compartido/ui/InputCampo";
 //un solo useState para todos los campos del formulario
 import useCamposFormulario from "../../../hooks/useCamposFormulario";
 import TarjetaPlato from "./TarjetaPlato";
+
+import {obtenerMenu, crearProducto, cambiarDisponibilidad, eliminarProducto} from "../../../servicios/menuServicio";
 import "./GestionMenu.css";
-// categorias que se definieron en firestore
+
 // Si se agrega una categoría nueva, se añade aqui
 const CATEGORIAS = ["Caldos", "Sopas", "Bandejas", "Bebidas", "Extras", "Porciones"];
 
@@ -35,39 +33,34 @@ const FORMULARIO_VACIO = {
 function GestionMenu() {
 
   // Aquí guardamos la información que cambia mientras usamos la pantalla.
-  const [platos,             setPlatos]             = useState([]);
-  const [cargando,           setCargando]           = useState(true);
-  const [modalAbierto,       setModalAbierto]       = useState(false);
-  const [platoEditando,      setPlatoEditando]      = useState(null); // null = plato nuevo
-  const [guardando,          setGuardando]          = useState(false);
-  const [busqueda,           setBusqueda]           = useState("");
-  const [categoriaActiva,    setCategoriaActiva]    = useState("Todas");
+  const [platos, setPlatos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [platoEditando, setPlatoEditando] = useState(null); // null = plato nuevo
+  const [guardando, setGuardando] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
+  const [categoriaActiva, setCategoriaActiva] = useState("Todas");
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
-  // estos son los datos que vamos escribiendo al agregar o editar un plato
+  // el hook useCamposFormulario nos da los campos del formulario, una funcion para manejar los cambios y otra para reiniciar el formulario
   const { campos, manejarCambio, reiniciar } = useCamposFormulario(FORMULARIO_VACIO);
 
-
-  // la lista se actualiza sola cuando cambia algo en Firebase
-  useEffect(() => {
-    const consultaPlatos = query(
-      collection(db, "productos"),
-      orderBy("createdAt", "desc")
-    );
-
-    const detenerEscucha = onSnapshot(consultaPlatos, (resultado) => {
-      const listaPlatos = resultado.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPlatos(listaPlatos);
+  const cargarPlatos = async () => {
+    try {
+      setCargando(true);
+      const datos = await obtenerMenu();
+      setPlatos(datos);
+    } catch (error) {
+      console.error("Error al obtener el menú:", error);
+      alert("Ocurrió un error al cargar el menú. Intenta de nuevo.");
+    } finally {
       setCargando(false);
-    });
-
-    // al salir de la pantalla, ya no necesitamos recibir esos cambios.
-    return () => detenerEscucha();
+    }
+  };
+  
+  useEffect(() => {
+    cargarPlatos();
   }, []);
-
 
   // mostramos solo los platos que coinciden con la búsqueda y la categoria
   const platosFiltrados = platos.filter((plato) => {
@@ -85,115 +78,74 @@ function GestionMenu() {
         nombre:      platoExistente.nombre,
         precio:      platoExistente.precio,
         categoria:   platoExistente.categoria,
-        descripcion: platoExistente.descripcion,
-        disponible:  platoExistente.disponible,
+        descripcion: platoExistente.descripcion || "",
+        urlImagen:   platoExistente.urlImagen || "",
+        disponible:  Boolean(platoExistente.disponible),
       });
     } else {
       setPlatoEditando(null);
       reiniciar(); // empezamos con un formulario limpio
     }
-    setImagenSeleccionada(null);
+    
     setModalAbierto(true);
   }
-
+// el modal sirve para agregar un plato nuevo o editar uno existente, si se pasa un plato existente se llenan los campos con sus datos, si no se pasa nada se dejan vacios para agregar un plato nuevo
+// Cerramos el modal y reiniciamos el formulario
   function cerrarModal() {
     setModalAbierto(false);
     setPlatoEditando(null);
     reiniciar();
-    setImagenSeleccionada(null);
+
   }
-
-
-  // Si se eligio una imagen, la guardamos en Firebase y obtenemos su direccion si no se eligio ninguna, seguimos sin cambiar la imagen
-  async function subirImagenSiHay() {
-    if (!imagenSeleccionada) return null;
-
-    const rutaStorage = ref(storage, `platos/${Date.now()}_${imagenSeleccionada.name}`);
-    await uploadBytes(rutaStorage, imagenSeleccionada);
-    return await getDownloadURL(rutaStorage);
-  }
-
-
-  // aqui guardamos un plato nuevo
+// Guardamos el plato nuevo o editado en la base de datos
   async function guardarPlato(evento) {
     evento.preventDefault();
     setGuardando(true);
 
     try {
-      const urlImagenNueva = await subirImagenSiHay();
-
-      // Reunimos toda la informacion antes de enviarla a Firebase
       const datosPlato = {
         nombre:      campos.nombre.trim(),
         precio:      Number(campos.precio),
         categoria:   campos.categoria,
         descripcion: campos.descripcion.trim(),
         disponible:  campos.disponible,
-        // Solo actualizamos urlImagen si subieron una nueva
-        ...(urlImagenNueva && { urlImagen: urlImagenNueva }),
       };
 
-      if (platoEditando) {
-        // EDITAR: actualizamos el documento existente en Firestore
-        await updateDoc(doc(db, "productos", platoEditando.id), datosPlato);
-      } else {
-        // AGREGAR: creamos un documento nuevo con fecha de creación
-        await addDoc(collection(db, "productos"), {
-          ...datosPlato,
-          urlImagen: urlImagenNueva || "",
-          createdAt: new Date(),
-        });
-      }
-
+      await crearProducto(datosPlato);
+      await cargarPlatos();
       cerrarModal();
 
     } catch (error) {
       console.error("Error al guardar el plato:", error);
-      alert("Ocurrió un error al guardar. Intenta de nuevo.");
+      alert("Ocurrio un error al guardar en la base de datos, intenta de nuevo");
     } finally {
       setGuardando(false);
     }
   }
-
-
-  // desde la tarjeta podemos marcar el plato como disponible o agotado
-  async function cambiarDisponibilidad(platoId, disponibleActual) {
-    try {
-      await updateDoc(doc(db, "productos", platoId), {
-        disponible: !disponibleActual,
-      });
-    } catch (error) {
-      console.error("Error al cambiar disponibilidad:", error);
-    }
-  }
-
-
-  // se revisa si la acción es editar el plato o cambiar su disponibilidad
-  function manejarEdicion(plato) {
+// Abrimos el modal con los datos del plato a editar
+  function manejarCambio(plato) {
     if (plato.soloToggle) {
-      cambiarDisponibilidad(plato.id, plato.disponible);
+      manejarCambioDisponibilidad(plato.id, plato.disponible);
     } else {
       abrirModal(plato);
     }
   }
-
-
-  // antes de eliminar preguntamos para evitar borrar un plato por accidente
-  async function eliminarPlato(platoId, nombrePlato) {
+// Cambiamos la disponibilidad del plato en la base de datos y recargamos los platos
+  async function manejarEliminacion(platoId, nombrePlato) {
     const confirmar = window.confirm(
-      `¿Estás segura de eliminar "${nombrePlato}"? Esta acción no se puede deshacer.`
+      `¿Estás segura de eliminar "${nombrePlato}"?`
     );
     if (!confirmar) return;
 
     try {
-      await deleteDoc(doc(db, "productos", platoId));
+      await eliminarProducto(platoId);
+      await cargarPlatos();
     } catch (error) {
       console.error("Error al eliminar el plato:", error);
-      alert("No se pudo eliminar el plato. Intenta de nuevo.");
+      alert("No se pudo eliminar el plato");
     }
   }
-
-
+  
   //Interfaz
   return (
     <div className="gestion-menu">
@@ -245,7 +197,7 @@ function GestionMenu() {
         <p className="gestion-menu__estado">
           {busqueda
             ? `No hay platos con "${busqueda}"`
-            : "No hay platos en el menú. ¡Agrega el primero!"}
+            : "No hay platos registrados"}
         </p>
 
       ) : (
@@ -254,8 +206,8 @@ function GestionMenu() {
             <TarjetaPlato
               key={plato.id}
               plato={plato}
-              alEditar={manejarEdicion}
-              alEliminar={eliminarPlato}
+              alEditar={manejarCambio} // alEditar es la funcion que abre el modal con los datos del plato a editar
+              alEliminar={manejarEliminacion} // alEliminar es la funcion que elimina el plato de la base de datos
             />
           ))}
         </div>
@@ -307,7 +259,7 @@ function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esE
           />
 
           <InputCampo
-            etiqueta="Precio (pesos colombianos)"
+            etiqueta="Precio (COP)"
             id="precio"
             nombre="precio"
             tipo="number"
@@ -340,7 +292,16 @@ function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esE
             tipo="text"
             valor={campos.descripcion}
             alCambiar={(e) => manejarCambio("descripcion", e.target.value)}
-            placeholder="Ej: Papa sabanera y costilla de res"
+            placeholder="Ej: Acompañado de papa, cilantro y costilla de res"
+          />
+          <InputCampo
+            etiqueta="URL de la imagen"
+            id="urlImagen"
+            nombre="urlImagen"
+            tipo="text"
+            valor={campos.urlImagen}
+            alCambiar={(e) => manejarCambio("urlImagen", e.target.value)}
+            placeholder="Ej: https://ejemplo.com/imagen.jpg"
           />
 
           {/* Selector de imagen */}
@@ -381,7 +342,7 @@ function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esE
               ancho="auto"
             />
           </div>
-
+          
         </form>
       </div>
     </div>

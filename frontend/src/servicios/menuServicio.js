@@ -8,7 +8,7 @@ export const obtenerMenu = async () => {
     if (!respuesta.ok) throw new Error("Error al obtener el menú");
     return await respuesta.json();
 };
-
+//se exporta la funcion para agregar un producto, que recibe un objeto producto con los datos del producto a agregar
 export const agregarProducto = async (producto) => {
     const respuesta = await fetch(API_URL, {
         method: "POST",
@@ -19,7 +19,7 @@ export const agregarProducto = async (producto) => {
     if (!respuesta.ok) throw new Error("Error al agregar el producto");
     return await respuesta.json();
 };
-
+//
 export const cambiarDisponibilidad = async (id, disponible) => {
     const respuesta = await fetch(`${API_URL}/${id}/disponibilidad`, {
         method: "PATCH",
