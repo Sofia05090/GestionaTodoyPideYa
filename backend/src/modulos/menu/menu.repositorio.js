@@ -1,11 +1,12 @@
 //se importa el modulo de conexión a la base de datos que se encuentra en la carpeta de configuracion
+//se importan los datos de la db desde el archivo configuracion para poder acceder desde cualquier archivo del proyecto
 const conexion = require("../../configuracion/bd");
 
 const obtenerMenuCompleto = async () => {
   const [filas] = await conexion.query(`
     SELECT p.id, p.nombre, p.descripcion, p.precio,
            c.nombre AS categoria,
-           p.url_imagen AS imagen_url,
+           p.url_imagen AS urlImagen,
            p.disponible,
            p.creado_en
     FROM productos p
@@ -15,7 +16,7 @@ const obtenerMenuCompleto = async () => {
   return filas;
 };
 
-const crearProducto = async ({ categoria_id, categoria, nombre, descripcion, precio, imagen_url, disponible = true }) => {
+const crearProducto = async ({ categoria_id, categoria, nombre, descripcion, precio, urlImagen, disponible = true }) => {
   let categoriaId = categoria_id;
 
   if (!categoriaId && categoria) {
@@ -32,7 +33,7 @@ const crearProducto = async ({ categoria_id, categoria, nombre, descripcion, pre
 
   const [resultado] = await conexion.query(
     `INSERT INTO productos (categoria_id, nombre, descripcion, precio, url_imagen, disponible) VALUES (?, ?, ?, ?, ?, ?)`,
-    [categoriaId, nombre, descripcion, precio, imagen_url || "", disponible]
+    [categoriaId, nombre, descripcion, precio, urlImagen || "", disponible]
   );
   return resultado.insertId;
 };
