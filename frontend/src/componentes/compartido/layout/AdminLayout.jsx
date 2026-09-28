@@ -2,9 +2,14 @@
 //se cambia a rutas anidadas para hacer el codigo mas limpio y no duplicar codigo, adminlayout ya no recibe children, ahora con outlet react router rellena automaticamente el componente hijo 
 import SidebarAdmin from "./SidebarAdmin";
 import "./AdminLayout.css";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { obtenerToken } from "../../../servicios/authServicio";
 
 function AdminLayout() {
+  if (!obtenerToken()) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
   return (
     <div className="admin-layout">
       <main className="admin-contenido">

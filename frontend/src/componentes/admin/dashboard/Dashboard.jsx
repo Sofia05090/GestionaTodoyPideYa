@@ -5,67 +5,60 @@
 //    Métricas del día
 //    Lista de pedidos activos en tiempo real
 //
-// Solo mostramos pedidos "pending" o "preparing"
-// "ready" y "delivered" se manejan en otro módulo
+// Solo mostramos pedidos pendientes o en preparación.
 
 import { useEffect, useState } from "react";
-import { db } from "../../../firebase/config";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-} from "firebase/firestore"; //estas importaciones son para consultar la base de datos de Firestore
 import { ShoppingBag, DollarSign, TrendingUp } from "lucide-react"; // estos iconos se usan en la parte de métricas del dashboard
+import { obtenerPedidosActivos } from "../../../servicios/pedidosServicio";
 import "./Dashboard.css"; 
 
 function Dashboard() {
   //Estado del componente
   const [pedidosActivos, setPedidosActivos] = useState([]);
-  const [totalVentasHoy, setTotalVentasHoy] = useState(0); // la variable setTotalVentasHoy no esta en uso, hasta cuando se implemente el panel de estadisticas le daremos una funcion para calcular el total de ventas del dia pero por ahora se inicializa en 0
+  const totalVentasHoy = 0;
   const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Consultamos pedidos activos ordenados del más reciente para mostrarlos
-    const consultaPedidosActivos = query(
-      collection(db, "pedidos"),
-      where("status", "in", ["pending", "preparing"]), // traemos los pedidos que esten en espera o en preparacion
-      orderBy("createdAt", "desc"), //con el createdAt ordenamos los pedidos del mas reciente al mas antiguo y con desc los organizamos de manera descendente
-    );
+    let activo = true;
 
-    // con onSnapshot mantenemos una conexión permanente con Firestore, porque se ejecuta cada vez que hay un cambio en la base de datos
-    const detenerEscucha = onSnapshot(consultaPedidosActivos, (resultado) => {
-      // doc.id es el ID del documento; doc.data() trae los campos
-      const listaNueva = resultado.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    async function cargarPedidos() {
+      try {
+        const pedidos = await obtenerPedidosActivos();
+        if (activo) {
+          setPedidosActivos(pedidos);
+          setError("");
+        }
+      } catch (errorCarga) {
+        if (activo) setError(errorCarga.message || "No se pudieron cargar los pedidos.");
+      } finally {
+        if (activo) setCargando(false);
+      }
+    }
 
-      setPedidosActivos(listaNueva); //se actualiza el estado de pedidosActivos con la lista nueva
-      setCargando(false); //le quitamos el Cargando
-    });
+    cargarPedidos();
+    const intervalo = window.setInterval(cargarPedidos, 5000);
 
-    // Detener la escucha evita errores de memoria después de cerrar sesion
-    return () => detenerEscucha();
+    return () => {
+      activo = false;
+      window.clearInterval(intervalo);
+    };
   }, []);
 
-  // Traducción de estados para la UI
-  // Los estados en Firestore están en inglés porque fueron definidos asi en la base de datos (pending, preparing) ready y delivered se manejan en otro modulo
-  // Esta función los convierte al español para mostrarlos
+  // Traduce los estados del backend para mostrarlos en el panel.
   function traducirEstado(estado) {
     const traducciones = {
-      pending: "En espera",
-      preparing: "Preparando",
-      ready: "Listo",
-      delivered: "Entregado",
+      pendiente: "En espera",
+      preparando: "Preparando",
+      listo: "Listo",
+      entregado: "Entregado",
     };
     return traducciones[estado] || estado;
   }
 
   //Pedidos que todavía no se han puesto a preparar
   const pedidosEnEspera = pedidosActivos.filter(
-    (pedido) => pedido.status === "pending",
+    (pedido) => pedido.estado === "pendiente",
   ).length;
 
   return (
@@ -99,7 +92,7 @@ function Dashboard() {
         <div className="metrica-card">
           <TrendingUp size={24} className="metrica-icono" />
           <div>
-            <p className="metrica-etiqueta">Plato Top</p>
+            <p className="metrica-etiqueta">Pedidos en espera</p>
             <p className="metrica-numero">{pedidosEnEspera}</p>
           </div>
         </div>
@@ -112,6 +105,8 @@ function Dashboard() {
         {/* casos: cargando / sin pedidos / la lista */}
         {cargando ? (
           <p className="estado-texto">Cargando pedidos...</p>
+        ) : error ? (
+          <p className="estado-texto">{error}</p>
         ) : pedidosActivos.length === 0 ? (
           <p className="estado-texto">No hay pedidos activos por ahora.</p>
         ) : (
@@ -137,9 +132,9 @@ function TarjetaPedido({ pedido, traducirEstado }) {
     <div className="tarjeta-pedido">
       {/* Mesa y estado */}
       <div className="pedido-cabecera">
-        <span className="pedido-mesa">{pedido.tableId}</span>
-        <span className={`pedido-estado estado-${pedido.status}`}>
-          {traducirEstado(pedido.status)}
+        <span className="pedido-mesa">Mesa {pedido.mesa}</span>
+        <span className={`pedido-estado estado-${{ pendiente: "pending", preparando: "preparing", listo: "ready", entregado: "delivered" }[pedido.estado] || ""}`}>
+          {traducirEstado(pedido.estado)}
         </span>
       </div>
 
@@ -147,21 +142,19 @@ function TarjetaPedido({ pedido, traducirEstado }) {
       <ul className="pedido-items">
         {pedido.items?.map((item, indice) => (
           <li key={indice}>
-            {item.quantity}x {item.dishName} — $
-            {item.price.toLocaleString("es-CO")}
+            {item.cantidad}x {item.nombre_plato} — $
+            {Number(item.precio_venta).toLocaleString("es-CO")}
           </li>
         ))}
       </ul>
 
       {/* Nota del cliente (solo si escribió algo) */}
-      {pedido.customerNotes && (
-        <p className="pedido-nota"> {pedido.customerNotes}</p>
+      {pedido.notas && (
+        <p className="pedido-nota"> {pedido.notas}</p>
       )}
 
       {/* Total alineado a la derecha */}
-      <p className="pedido-total">
-        Total: ${pedido.total?.toLocaleString("es-CO")}
-      </p>
+      <p className="pedido-total">Total: ${Number(pedido.total || 0).toLocaleString("es-CO")}</p>
     </div>
   );
 }

@@ -3,8 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const config = require("./config");
 const app = express();
+
 //importacion de las rutas de los modulos
+const authRutas = require("./modulos/autenticacion/auth.rutas");
 const menuRutas = require("./modulos/menu/menu.rutas");
+const pedidosRutas = require("./modulos/pedidos/pedidos.rutas");
 
 //middleware para que procese los datos en formato json y permitir el acceso desde react
 app.use(cors());
@@ -15,6 +18,8 @@ app.use(express.json());
 app.set("PUERTO", config.app.PUERTO);
 
 //rutas
+app.use("/api/auth", authRutas);
 app.use("/api/menu", menuRutas);
+app.use("/api/pedidos", pedidosRutas);
 //se importa el objeto app para poder acceder a las rutas desde cualquier archivo del proyecto
 module.exports = app;
