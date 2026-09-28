@@ -1,8 +1,7 @@
 // Barra de navegacion del admin
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../../../firebase/config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { cerrarSesion as cerrarSesionAdmin, obtenerAdmin } from "../../../servicios/authServicio";
 import "./SidebarAdmin.css";
 //se importa los iconos de lucide-react para el menu de navegacion del admin
 import {
@@ -46,20 +45,11 @@ const LINKS_NAVEGACION = [
 
 function SidebarAdmin() {
   const navegar = useNavigate();
-  const [correoAdmin, setCorreoAdmin] = useState("");
-
-  // Firebase puede tardar un momento en recuperar la sesion despues de recargar
-  useEffect(() => {
-    const dejarDeEscuchar = onAuthStateChanged(auth, (usuario) => {
-      setCorreoAdmin(usuario?.email ?? "");
-    });
-
-    return () => dejarDeEscuchar();
-  }, []);
+  const [correoAdmin] = useState(() => obtenerAdmin()?.correo ?? "");
 
   // Cerramos la sesion y volvemos a la pantalla de inicio de sesion
-  async function cerrarSesion() {
-    await signOut(auth);
+  function cerrarSesion() {
+    cerrarSesionAdmin();
     navegar("/admin/login", { replace: true });
   }
 
