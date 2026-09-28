@@ -1,6 +1,6 @@
 // pantalla de gestion del menu
 // se visualiza:
-// LISTAR los platos desde Firestore en tarjetas
+// LISTAR los platos de la API en tarjetas
 // FILTRAR por nombre (buscador) y categoria (selector)
 // CRUD agregar, editar, cambiar disponibilidad del plato y eliminar
 //  se usa el Hook useCamposFormulario maneja todos los campos del formulario con un solo useState en vez de uno por cada campo
@@ -43,7 +43,7 @@ function GestionMenu() {
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
   // el hook useCamposFormulario nos da los campos del formulario, una funcion para manejar los cambios y otra para reiniciar el formulario
-  const { campos, manejarCambio, reiniciar } = useCamposFormulario(FORMULARIO_VACIO);
+  const { campos, manejarCambio: manejarCambioCampo, reiniciar } = useCamposFormulario(FORMULARIO_VACIO);
 
   const cargarPlatos = async () => {
     try {
@@ -130,6 +130,17 @@ function GestionMenu() {
       abrirModal(plato);
     }
   }
+
+  async function manejarCambioDisponibilidad(platoId, disponible) {
+    try {
+      await cambiarDisponibilidad(platoId, disponible);
+      await cargarPlatos();
+    } catch (error) {
+      console.error("Error al cambiar la disponibilidad:", error);
+      alert("No se pudo actualizar la disponibilidad del plato.");
+    }
+  }
+
 // Cambiamos la disponibilidad del plato en la base de datos y recargamos los platos
   async function manejarEliminacion(platoId, nombrePlato) {
     const confirmar = window.confirm(
@@ -217,7 +228,7 @@ function GestionMenu() {
       {modalAbierto && (
         <ModalPlato
           campos={campos}
-          manejarCambio={manejarCambio}
+          manejarCambio={manejarCambioCampo}
           alGuardar={guardarPlato}
           alCerrar={cerrarModal}
           guardando={guardando}

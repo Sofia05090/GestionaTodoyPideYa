@@ -1,9 +1,8 @@
 // Pantalla de inicio de sesión
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../firebase/config";
 import { useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
+import { iniciarSesion } from "../../../servicios/authServicio";
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import InputCampo from "../../compartido/ui/InputCampo";
 import "./LoginAdmin.css";
@@ -24,12 +23,10 @@ function LoginAdmin() {
     setError("");
 
     try {
-      await signInWithEmailAndPassword(auth, correoAdmin, contrasena);
-      // si el login exitoso, vamos al panel principal
+      await iniciarSesion(correoAdmin, contrasena);
       navegar("/admin/dashboard");
-    } catch (errorDeFirebase) {
-      // Le damos un error claro al usuario
-      setError("Correo o contraseña incorrectos. Intenta de nuevo.");
+    } catch (errorLogin) {
+      setError(errorLogin.message || "No se pudo iniciar sesión. Intenta de nuevo.");
     } finally {
       setCargando(false);
     }
@@ -69,7 +66,7 @@ function LoginAdmin() {
 
           />
 
-          {/*aparece si Firebase rechaza las credenciales */}
+          {/* Mensaje de error de autenticación */}
           {error && <p className="login-error">{error}</p>}
 
           {/*boton Primario maneja el gradiente y el texto de carga*/}
@@ -80,11 +77,6 @@ function LoginAdmin() {
           />
           
         </form>
-        {/*de momento, sin funcionalidad */}
-        <p className="login-pie">
-          ¿No tienes cuenta?{" "}
-          <span className="login-pie-enlace">Regístrate</span>
-        </p>
       </div>
     </div>
   );
