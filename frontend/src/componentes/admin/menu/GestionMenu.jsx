@@ -15,7 +15,7 @@ import InputCampo    from "../../compartido/ui/InputCampo";
 import useCamposFormulario from "../../../hooks/useCamposFormulario";
 import TarjetaPlato from "./TarjetaPlato";
 
-import {obtenerMenu, crearProducto, cambiarDisponibilidad, eliminarProducto} from "../../../servicios/menuServicio";
+import {obtenerMenu, crearProducto, actualizarProducto, cambiarDisponibilidad, eliminarProducto} from "../../../servicios/menuServicio";
 import "./GestionMenu.css";
 
 // Si se agrega una categoría nueva, se añade aqui
@@ -27,6 +27,7 @@ const FORMULARIO_VACIO = {
   precio:      "",
   categoria:   "Caldos",
   descripcion: "",
+  urlImagen:   "",
   disponible:  true,
 };
 
@@ -108,16 +109,22 @@ function GestionMenu() {
         precio:      Number(campos.precio),
         categoria:   campos.categoria,
         descripcion: campos.descripcion.trim(),
+        urlImagen:   campos.urlImagen?.trim() || "", //se envia la url de la imagen si se selecciono una, si no se deja vacio
         disponible:  campos.disponible,
       };
-
+      if (platoEditando) {
+        //si estamos editando, llamamos a PUT
+        await actualizarProducto(platoEditando.id, datosPlato);
+      } else {
+        //si es nuevo, llamamos a POST
       await crearProducto(datosPlato);
+      }
       await cargarPlatos();
       cerrarModal();
 
     } catch (error) {
       console.error("Error al guardar el plato:", error);
-      alert("Ocurrio un error al guardar en la base de datos, intenta de nuevo");
+      alert(error.message || "Ocurrio un error al guardar en la base de datos, intenta de nuevo");
     } finally {
       setGuardando(false);
     }
