@@ -24,7 +24,7 @@ function LoginAdmin() {
 
     try {
       await iniciarSesion(correoAdmin, contrasena);
-      navegar("/admin/dashboard");
+      navegar("/admin/dashboard"); //dirige al dashboard del admin
     } catch (errorLogin) {
       setError(errorLogin.message || "No se pudo iniciar sesión. Intenta de nuevo.");
     } finally {
