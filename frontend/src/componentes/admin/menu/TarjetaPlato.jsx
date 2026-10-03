@@ -5,6 +5,13 @@
 import { Pencil, Trash2, ImageOff, CheckCircle } from "lucide-react";
 import "./TarjetaPlato.css";
 
+const formatearMoneda = (valor) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(Number(valor || 0));
+
 function TarjetaPlato({ plato, alEditar, alEliminar }) {
   return (
     <div className="tarjeta-plato">
@@ -43,7 +50,7 @@ function TarjetaPlato({ plato, alEditar, alEliminar }) {
         <button
           type="button"
           className={`tarjeta-plato__toggle ${plato.disponible ? "toggle--disponible" : "toggle--agotado"}`}
-          onClick={() => alEditar({ ...plato, soloToggle: true })}
+          onClick={() => alEditar({ ...plato, soloToggle: true, disponible: !plato.disponible })}
         >
           <CheckCircle size={15} />
           {plato.disponible ? "Disponible — clic para agotar" : "Agotado — clic para activar"}
@@ -53,7 +60,7 @@ function TarjetaPlato({ plato, alEditar, alEliminar }) {
       {/* Precio y botones de accion */}
       <div className="tarjeta-plato__pie">
         <span className="tarjeta-plato__precio">
-          ${Number(plato.precio).toLocaleString("es-CO")}
+          {formatearMoneda(plato.precio)}
         </span>
 
         <div className="tarjeta-plato__acciones">
