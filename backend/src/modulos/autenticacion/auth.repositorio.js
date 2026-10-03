@@ -11,4 +11,12 @@ const buscarAdminPorCorreo = async (correo) => {
   return filas[0];
 };
 
-module.exports = { buscarAdminPorCorreo };
+const crearAdmin = async (nombre, correo, contrasenaHash) => {
+  const [resultado] = await conexion.query(
+    "INSERT INTO administradores (nombre, correo, contrasena) VALUES (?, ?, ?)",
+    [nombre, correo, contrasenaHash]
+  );
+  return resultado.insertId;
+};
+
+module.exports = { buscarAdminPorCorreo, crearAdmin };

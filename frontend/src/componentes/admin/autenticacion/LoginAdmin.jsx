@@ -1,6 +1,6 @@
 // Pantalla de inicio de sesión
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChefHat } from "lucide-react";
 import { iniciarSesion } from "../../../servicios/authServicio";
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
@@ -50,6 +50,8 @@ function LoginAdmin() {
             etiqueta="Correo electrónico"
             id="correo"
             tipo="email"
+            requerido
+            autoComplete="email"
             valor={correoAdmin}
             alCambiar={(e) => setCorreo(e.target.value)}
             placeholder="admin@gmail.com"
@@ -60,6 +62,8 @@ function LoginAdmin() {
             etiqueta="Contraseña"
             id="contrasena"
             tipo="password"
+            requerido
+            autoComplete="current-password"
             valor={contrasena}
             alCambiar={(e) => setContrasena(e.target.value)}
             placeholder="••••••••"
@@ -77,6 +81,10 @@ function LoginAdmin() {
           />
           
         </form>
+
+        <p className="login-pie">
+          ¿No tienes cuenta? <Link to="/admin/registro" className="login-pie-enlace">Regístrate</Link>
+        </p>
       </div>
     </div>
   );

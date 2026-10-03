@@ -23,8 +23,8 @@ function useFormulario(valoresIniciales) {
   }
 
   // despues de guardar o cancelar, dejamos el formulario como al principio
-  function reiniciar() {
-    setCampos(valoresIniciales);
+  function reiniciar(nuevosValores = valoresIniciales) {
+    setCampos(nuevosValores);
   }
 
   // devolvemos los datos y las funciones que usará el formulario

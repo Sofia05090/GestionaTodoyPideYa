@@ -10,6 +10,7 @@ import { Search }                           from "lucide-react";
 // Son botones y campos que también usamos en otras pantallas
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import InputCampo    from "../../compartido/ui/InputCampo";
+import SelectorDesplegable from "../../compartido/ui/SelectorDesplegable";
 
 //un solo useState para todos los campos del formulario
 import useCamposFormulario from "../../../hooks/useCamposFormulario";
@@ -18,8 +19,15 @@ import TarjetaPlato from "./TarjetaPlato";
 import {obtenerMenu, crearProducto, actualizarProducto, cambiarDisponibilidad, eliminarProducto} from "../../../servicios/menuServicio";
 import "./GestionMenu.css";
 
-// Si se agrega una categoría nueva, se añade aqui
-const CATEGORIAS = ["Caldos", "Sopas", "Bandejas", "Bebidas", "Extras", "Porciones"];
+// Si la API devuelve nuevas categorías, se usan automáticamente.
+const CATEGORIAS_FALLBACK = ["Acompañamientos", "Bebidas", "Caldos", "Extras y Porciones", "Porciones"];
+
+const normalizarCategoria = (valor = "") =>
+  valor
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 
 // Datos iniciales para empezar un plato nuevo.
 const FORMULARIO_VACIO = {
@@ -41,10 +49,21 @@ function GestionMenu() {
   const [guardando, setGuardando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("Todas");
-  const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
+  const [, setImagenSeleccionada] = useState(null);
 
   // el hook useCamposFormulario nos da los campos del formulario, una funcion para manejar los cambios y otra para reiniciar el formulario
   const { campos, manejarCambio: manejarCambioCampo, reiniciar } = useCamposFormulario(FORMULARIO_VACIO);
+
+  const categoriasDisponibles = Array.from(
+    new Set(
+      platos
+        .map((plato) => plato.categoria)
+        .filter(Boolean)
+        .map((categoria) => categoria.trim())
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  const categoriasSelector = categoriasDisponibles.length > 0 ? categoriasDisponibles : CATEGORIAS_FALLBACK;
 
   const cargarPlatos = async () => {
     try {
@@ -60,13 +79,33 @@ function GestionMenu() {
   };
   
   useEffect(() => {
-    cargarPlatos();
+    let activo = true;
+
+    obtenerMenu()
+      .then((datos) => {
+        if (activo) setPlatos(datos);
+      })
+      .catch((error) => {
+        if (activo) {
+          console.error("Error al obtener el menú:", error);
+          alert("Ocurrió un error al cargar el menú. Intenta de nuevo.");
+        }
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
+
+    return () => {
+      activo = false;
+    };
   }, []);
 
   // mostramos solo los platos que coinciden con la búsqueda y la categoria
   const platosFiltrados = platos.filter((plato) => {
-    const coincideNombre    = plato.nombre.toLowerCase().includes(busqueda.toLowerCase());
-    const coincideCategoria = categoriaActiva === "Todas" || plato.categoria === categoriaActiva;
+    const coincideNombre = plato.nombre.toLowerCase().includes(busqueda.toLowerCase());
+    const coincideCategoria =
+      categoriaActiva === "Todas" ||
+      normalizarCategoria(plato.categoria) === normalizarCategoria(categoriaActiva);
     return coincideNombre && coincideCategoria;
   });
 
@@ -139,11 +178,23 @@ function GestionMenu() {
   }
 
   async function manejarCambioDisponibilidad(platoId, disponible) {
+    const estadoAnterior = platos.find((plato) => plato.id === platoId)?.disponible;
+
+    setPlatos((prevPlatos) =>
+      prevPlatos.map((plato) =>
+        plato.id === platoId ? { ...plato, disponible } : plato
+      )
+    );
+
     try {
       await cambiarDisponibilidad(platoId, disponible);
-      await cargarPlatos();
     } catch (error) {
       console.error("Error al cambiar la disponibilidad:", error);
+      setPlatos((prevPlatos) =>
+        prevPlatos.map((plato) =>
+          plato.id === platoId ? { ...plato, disponible: estadoAnterior } : plato
+        )
+      );
       alert("No se pudo actualizar la disponibilidad del plato.");
     }
   }
@@ -195,16 +246,19 @@ function GestionMenu() {
           />
         </div>
 
-        <select
+        <SelectorDesplegable
           value={categoriaActiva}
-          onChange={(e) => setCategoriaActiva(e.target.value)}
+          onChange={setCategoriaActiva}
+          ariaLabel="Filtrar por categoría"
           className="gestion-menu__selector"
-        >
-          <option value="Todas">Todas las categorías</option>
-          {CATEGORIAS.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
+          options={[
+            { value: "Todas", label: "Todas las categorías" },
+            ...categoriasSelector.map((categoria) => ({
+              value: categoria,
+              label: categoria,
+            })),
+          ]}
+        />
       </div>
 
       {/* Lista de tarjetas de platos */}
@@ -240,6 +294,7 @@ function GestionMenu() {
           alCerrar={cerrarModal}
           guardando={guardando}
           esEdicion={platoEditando !== null}
+          categoriasSelector={categoriasSelector}
           alSeleccionarImagen={(e) => setImagenSeleccionada(e.target.files[0])}
         />
       )}
@@ -250,7 +305,7 @@ function GestionMenu() {
 
 //Modal plato
 // este es el formulario que aparece al agregar o editar un plato, lo dejamos aparte para que la pantalla principal sea mas facil de leer
-function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esEdicion, alSeleccionarImagen }) {
+function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esEdicion, categoriasSelector, alSeleccionarImagen }) {
   return (
     // Al hacer clic fuera del formulario se cierra
     <div className="modal-fondo" onClick={alCerrar}>
@@ -297,7 +352,7 @@ function ModalPlato({ campos, manejarCambio, alGuardar, alCerrar, guardando, esE
               onChange={(e) => manejarCambio("categoria", e.target.value)}
               className="modal-selector"
             >
-              {CATEGORIAS.map((cat) => (
+              {categoriasSelector.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
