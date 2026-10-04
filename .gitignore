@@ -1,4 +1,36 @@
+# Dependencias
+node_modules/
+*/node_modules/
+
+# Compilación y construcción
+dist/
+dist-ssr/
+build/
+*.local
+
+# Logs y depuración
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Configuración de editores e IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Variables de entorno por seguridad
 .env
 .env.*
-node_modules/
-dist/
+*.env
+backend/.env
+frontend/.env
