@@ -14,12 +14,6 @@
   top: 0; /*se fija a la parte superior de la pantalla */
   bottom: 0; /*se fija a la parte inferior de la pantalla */
 }
-/*se modifica el contenedor del dashboard */
-.dashboard-contenedor {
-  margin-right: 260px; /*deja espacio para el sidebar */
-  padding: 1rem; /*se agrega un padding para que el contenido no quede pegado al borde */
-}
-
 /* Cabeza */
 .sidebar-cabecera {
   display: flex;

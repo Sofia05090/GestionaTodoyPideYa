@@ -1,0 +1,22 @@
+.registro-contenedor {
+  padding: 32px 16px;
+}
+
+.registro-card {
+  max-width: 560px;
+  padding: 30px;
+}
+
+.registro-card .login-icono-contenedor {
+  align-self: center;
+}
+
+.registro-card .login-formulario {
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .registro-card {
+    padding: 24px 20px;
+  }
+}
