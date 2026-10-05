@@ -1,54 +1,106 @@
-.inicio-contenedor{
+.inicio-contenedor {
+    display: grid;
     min-height: 100vh;
+    min-height: 100svh;
+    place-items: center;
+    padding: 32px 20px;
+    background: linear-gradient(110deg, #f58458 0%, #ed2f42 100%);
+    color: #fff;
+    text-align: center;
+}
+
+.inicio-contenido {
     display: flex;
+    width: min(100%, 560px);
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #ff7a45, #ff4d4f);
-    padding: 1.5rem;
-    box-sizing: border-box;
 }
 
-.inicio-titulo{
-    font-size: 2rem;
+.inicio-titulo {
+    margin: 0;
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: #fff;
+}
+
+.inicio-subtitulo {
+    margin: 16px 0 60px;
+    color: rgba(255, 255, 255, 0.96);
+    font-size: 25px;
     font-weight: 700;
-    color: white;
-    margin-bottom: 1rem;
-
 }
 
-.inicio-subtitulo{
-
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.inicio-boton{
-
+.inicio-boton {
     display: flex;
+    min-height: 96px;
+    width: 100%;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.5rem;
-    border-radius: 12px;
-    border: none;
+    padding: 20px 32px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    color: #ef3948;
+    font: inherit;
+    font-size: 24px;
+    font-weight: 800;
     cursor: pointer;
-    width: 100%;
-    max-width: 320px;
+    transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.inicio-boton-pedido{
-
-    background-color: white;
-    color: #ff4d4f;
-
+.inicio-boton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(119, 20, 35, 0.16);
 }
 
-.inicio-boton-qr{
+.inicio-boton:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 5px;
+}
 
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
+.inicio-acceso-admin {
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 160ms ease;
+}
 
+.inicio-acceso-admin:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.inicio-acceso-admin:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+    .inicio-contenido {
+        width: min(100%, 460px);
+    }
+
+    .inicio-titulo {
+        font-size: 52px;
+    }
+
+    .inicio-subtitulo {
+        margin: 14px 0 44px;
+        font-size: 21px;
+    }
+
+    .inicio-boton {
+        min-height: 72px;
+        padding: 16px 22px;
+        font-size: 20px;
+    }
+
+    .inicio-acceso-admin {
+        margin-top: 18px;
+        font-size: 14px;
+    }
 }
