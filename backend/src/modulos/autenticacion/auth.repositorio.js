@@ -20,3 +20,22 @@ const crearAdmin = async (nombre, correo, contrasenaHash) => {
 };
 
 module.exports = { buscarAdminPorCorreo, crearAdmin };
+
+// endpoint para actualizar perfil del administrador, incluyendo nombre y correo
+// actualizar los datos del administrador en la base de datos
+const actualizarAdmin = async (id, nombre, correo) => {
+  await conexion.query(
+    "UPDATE administradores SET nombre = ?, correo = ? WHERE id = ?",
+    [nombre, correo, id]
+  );
+};
+
+// actualizar la contraseña del administrador en la base de datos
+const actualizarContrasenaAdmin = async (id, contrasenaHash) => {
+  await conexion.query(
+    "UPDATE administradores SET contrasena = ? WHERE id = ?",
+    [contrasenaHash, id]
+  );
+};
+// se exporta las funciones para buscar, crear y actualizar administradores
+module.exports = { buscarAdminPorCorreo, crearAdmin, actualizarAdmin, actualizarContrasenaAdmin };
