@@ -1,6 +1,7 @@
 //se importa express, cors y el archivo de configuracion para poder acceder a las variables de entorno desde cualquier archivo del proyecto
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const { rateLimit } = require("express-rate-limit");
 const config = require("./config");
 const app = express();
@@ -36,6 +37,7 @@ const limitePedidosQr = rateLimit({
 //middleware para que procese los datos en formato json y permitir el acceso desde react
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
+app.use("/uploads", express.static(path.join(__dirname, "../imagenes")));
 app.use("/api", limiteApi);
 app.use("/api/auth/login", crearLimiteAutenticacion());
 app.use("/api/auth/registro", crearLimiteAutenticacion());

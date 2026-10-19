@@ -1,7 +1,9 @@
 // Barra de navegacion del admin
-import { useState } from "react";
+import { useState } from "react"; // <-- 1. Aseguramos useState (ya lo tenías, está perfecto)
 import { NavLink, useNavigate } from "react-router-dom";
 import { cerrarSesion as cerrarSesionAdmin, obtenerAdmin } from "../../../servicios/authServicio";
+import { useUsuario } from "../../../contexto/UsuarioContexto";
+import ModalPerfil from "../../admin/perfil/ModalPerfil";
 import "./SidebarAdmin.css";
 //se importa los iconos de lucide-react para el menu de navegacion del admin
 import {
@@ -46,6 +48,9 @@ const LINKS_NAVEGACION = [
 function SidebarAdmin() {
   const navegar = useNavigate();
   const [correoAdmin] = useState(() => obtenerAdmin()?.correo ?? "");
+  
+  // <-- 2. AGREGADO: Estado para abrir/cerrar el modal. (Dejé tu useState del correo intacto)
+  const [modalPerfilAbierto, setModalPerfilAbierto] = useState(false);
 
   // Cerramos la sesion y volvemos a la pantalla de inicio de sesion
   function cerrarSesion() {
@@ -88,8 +93,13 @@ function SidebarAdmin() {
 
       {/*Pie */}
       <div className="sidebar-pie">
-        {/* Avatar circular con la inicial + correo del admin */}
-        <div className="sidebar-admin-info">
+        
+        {/* <-- 3. AGREGADO: onClick al div para que abra el modal, y un cursor pointer para que se note que se puede hacer clic */}
+        <div 
+          className="sidebar-admin-info" 
+          onClick={() => setModalPerfilAbierto(true)}
+          style={{ cursor: "pointer" }}
+        >
           <div className="sidebar-avatar">{inicialAvatar}</div>
           <div className="sidebar-admin-textos">
             <p className="sidebar-admin-nombre">Admin</p>
@@ -107,6 +117,12 @@ function SidebarAdmin() {
           <span>Cerrar sesión</span>
         </button>
       </div>
+
+      {/* <-- 4. AGREGADO: Renderizar el modal si el estado es verdadero */}
+      {modalPerfilAbierto && (
+        <ModalPerfil alCerrar={() => setModalPerfilAbierto(false)} />
+      )}
+
     </aside>
   );
 }
