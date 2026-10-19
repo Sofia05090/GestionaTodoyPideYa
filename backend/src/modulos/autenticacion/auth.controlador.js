@@ -107,5 +107,29 @@ const registrarAdmin = async (req, res) => {
     return res.status(500).json({ mensaje: "No se pudo crear la cuenta" });
   }
 };
+ // actualizar el perfil
+ const  actualizarPerfilAdmin = async (req, res) => {
+  const {nombre, correo, contrasenaNueva} = req.body;
+  const adminId = req.admin.id;
+  try {
+    // se valida que el nombre, correo sean validos y que no este en uso 
+    const adminExistente = await authRepo.buscarAdminPorCorreo(correo);
+    if (adminExistente && adminExistente.id !== adminId) {
+      return res.status(409).json({ mensaje: "Ya existe una cuenta con ese correo" });
+    }
+// actualiza el nombre y correo del administrador en la base de datos
+  await authRepo.actualizarAdmin(adminId, nombre, correo);
+//el usuario envia una nueva contraseña, se valida y se actualiza en la base de datos
+    if (contrasenaNueva) {
+      const hashNueva = await bcrypt.hash(contrasenaNueva, 12);
+      await authRepo.actualizarContrasenaAdmin(adminId, hashNueva);
+    }
 
-module.exports = { iniciarSesion, registrarAdmin };
+    return res.status(200).json({ mensaje: "Perfil actualizado correctamente", admin: { id: adminId, nombre, correo } });
+  } catch (error) {
+    console.error("Error al actualizar el perfil del administrador:", error);
+    return res.status(500).json({ mensaje: "No se pudo actualizar el perfil" });
+  }
+};
+
+module.exports = { iniciarSesion, actualizarPerfilAdmin, registrarAdmin };
