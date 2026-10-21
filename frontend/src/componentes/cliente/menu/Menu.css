@@ -1,0 +1,130 @@
+.menu-contenedor {
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #fff7f2;
+}
+
+.menu-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.menu-titulo { margin: 0; font-size: 1.6rem; font-weight: 700; color: #ff4d4f; }
+
+.menu-boton-carrito {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  cursor: pointer;
+}
+
+.menu-carrito-contador {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ff4d4f;
+  border-radius: 10px;
+  background: #fff;
+  color: #ff4d4f;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.menu-buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ffd9c9;
+  border-radius: 12px;
+  background: #fff;
+  color: #999;
+}
+
+.menu-buscador-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  color: #2d2d2d;
+}
+
+.menu-categorias {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  overflow-x: auto;
+}
+
+.menu-categoria {
+  flex-shrink: 0;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #ffb89c;
+  border-radius: 999px;
+  background: #fff;
+  color: #ff4d4f;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.menu-categoria--activa {
+  border-color: transparent;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+}
+
+.menu-lista { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.menu-tarjeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.08);
+}
+
+.menu-tarjeta-info { flex: 1; min-width: 0; }
+.menu-tarjeta-nombre { margin: 0 0 0.25rem; font-size: 1rem; color: #2d2d2d; }
+.menu-tarjeta-descripcion { margin: 0 0 0.4rem; font-size: 0.82rem; color: #777; }
+.menu-tarjeta-precio { margin: 0; font-weight: 700; color: #ff4d4f; }
+
+.menu-boton-agregar {
+  padding: 0.55rem 0.9rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.menu-boton-agregar:disabled { background: #ddd; color: #888; cursor: not-allowed; }
+
+.menu-mensaje { padding: 2rem 0; text-align: center; color: #777; }
+.menu-mensaje--error { color: #d4380d; }
