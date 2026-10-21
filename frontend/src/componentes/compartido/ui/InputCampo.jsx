@@ -1,5 +1,4 @@
 // formulario reutilizable
-import React from "react";
 import "./InputCampo.css";
 
 function InputCampo({
@@ -12,6 +11,9 @@ function InputCampo({
     alCambiar,
     placeholder = "",
     requerido = false,
+    minLength,
+    maxLength,
+    autoComplete,
 }) {
     return (
         <div className="input-campo-grupo">
@@ -30,6 +32,9 @@ function InputCampo({
                 onChange={alCambiar}
                 placeholder={placeholder}
                 required={requerido}
+                minLength={minLength}
+                maxLength={maxLength}
+                autoComplete={autoComplete}
                 className="input-campo-input"
             />
 

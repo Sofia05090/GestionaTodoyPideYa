@@ -1,0 +1,99 @@
+.selector-desplegable {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.selector-desplegable--abierto {
+  z-index: 20;
+}
+
+.selector-desplegable__boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 45px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #111827;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.selector-desplegable__boton:focus-visible {
+  outline: 2px solid var(--color-primario, #e65c00);
+  outline-offset: 2px;
+}
+
+.selector-desplegable__boton > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selector-desplegable__flecha {
+  flex: 0 0 auto;
+  color: #a0a5ae;
+  transition: transform 0.16s ease;
+}
+
+.selector-desplegable--abierto .selector-desplegable__flecha {
+  transform: rotate(180deg);
+}
+
+.selector-desplegable__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 30;
+  max-height: min(320px, 60vh);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.16);
+}
+
+.selector-desplegable__opcion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #252525;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.selector-desplegable__opcion:hover,
+.selector-desplegable__opcion:focus-visible {
+  outline: 0;
+  background: #fff1e6;
+}
+
+.selector-desplegable__opcion--seleccionada,
+.selector-desplegable__opcion--seleccionada:hover,
+.selector-desplegable__opcion--seleccionada:focus-visible {
+  background: #f5a261;
+  color: #252525;
+}
+
+.selector-desplegable__opcion--seleccionada svg {
+  color: #374151;
+}

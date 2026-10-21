@@ -88,5 +88,10 @@
 .login-pie-enlace {
   color: var(--color-primario);
   font-weight: 600;
-  cursor: default; 
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-pie-enlace:hover {
+  text-decoration: underline;
 }
