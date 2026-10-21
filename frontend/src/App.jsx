@@ -7,29 +7,46 @@ import Dashboard from "./componentes/admin/dashboard/Dashboard";
 import GestionMenu from "./componentes/admin/menu/GestionMenu";
 import Inicio from "./componentes/cliente/inicio/Inicio";
 import Menu from "./componentes/cliente/menu/Menu";
+import { CarritoProvider } from "./contexto/CarritoProvider";
+import EscanearQR from "./componentes/cliente/inicio/EscanearQR";
+import Carrito from "./componentes/cliente/carrito/Carrito";
+import EstadoOrden from "./componentes/cliente/orden/EstadoOrden";
+import EditarOrden from "./componentes/cliente/orden/EditarOrden";
+
+
+
+
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/*panel del cliente*/}
-        <Route path="/" element={<LoginAdmin />} />
-        <Route path="/menu" element={<Menu />} />
+    <CarritoProvider>
+      <BrowserRouter>
+        <Routes>
+          {/*panel del cliente*/}
+          <Route path="/" element={<Inicio />} />
+          <Route path="/escanear-qr" element={<EscanearQR />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/carrito" element={<Carrito />} />
+          <Route path="/orden/:id" element={<EstadoOrden />} />
+          <Route path="/orden/:id/editar" element={<EditarOrden />} />
 
-        {/* ruta que redirige al login */}
-        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
 
-        {/* el inicio de sesión no muestra el menu lateral */}
-        <Route path="/admin/login" element={<LoginAdmin />} />
 
-        {/* estas pantallas usan el diseño del administrador y su menu lateral */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="menu" element={<GestionMenu />} />
+          {/* ruta que redirige al login */}
+          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
 
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          {/* el inicio de sesión no muestra el menu lateral */}
+          <Route path="/admin/login" element={<LoginAdmin />} />
+
+          {/* estas pantallas usan el diseño del administrador y su menu lateral */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="menu" element={<GestionMenu />} />
+
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </CarritoProvider>
   );
 }
 
