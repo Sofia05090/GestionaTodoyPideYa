@@ -3,6 +3,10 @@ const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
+if (Buffer.byteLength(process.env.JWT_SECRETO || "", "utf8") < 32) {
+    throw new Error("JWT_SECRETO debe configurarse con al menos 32 bytes aleatorios antes de iniciar el backend.");
+}
+
 module.exports = {
     app: {
         PUERTO: process.env.PUERTO || 5000,
