@@ -1,0 +1,55 @@
+.qr-contenedor {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+}
+
+.qr-tarjeta {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.qr-icono { color: #ff4d4f; }
+.qr-titulo { margin: 0.5rem 0; color: #2d2d2d; }
+.qr-texto { margin: 0 0 1.25rem; color: #777; font-size: 0.9rem; }
+
+.qr-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #ffd9c9;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.qr-boton {
+  width: 100%;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qr-boton-volver {
+  margin-top: 0.75rem;
+  border: none;
+  background: transparent;
+  color: #ff4d4f;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

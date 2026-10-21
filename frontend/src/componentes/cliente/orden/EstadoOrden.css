@@ -1,0 +1,85 @@
+.estado-contenedor {
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+  box-sizing: border-box;
+  background: #fff7f2;
+}
+
+.estado-titulo { margin: 0; font-size: 1.5rem; color: #ff4d4f; }
+.estado-mesa { margin: 0.25rem 0 1.25rem; color: #777; }
+.estado-mensaje { padding: 2rem 0; text-align: center; color: #777; }
+
+.estado-pasos {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.estado-paso {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  text-align: center;
+  color: #aaa;
+}
+
+.estado-paso-punto { width: 14px; height: 14px; border-radius: 50%; background: #e4e4e4; }
+.estado-paso--hecho { color: #ff7a45; }
+.estado-paso--hecho .estado-paso-punto { background: #ff7a45; }
+.estado-paso--actual { font-weight: 700; color: #ff4d4f; }
+.estado-paso--actual .estado-paso-punto {
+  background: #ff4d4f;
+  box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.2);
+}
+
+.estado-descripcion { margin: 0 0 1.25rem; text-align: center; font-weight: 600; color: #2d2d2d; }
+
+.estado-tarjeta {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.08);
+}
+
+.estado-linea { display: flex; justify-content: space-between; padding: 0.3rem 0; font-size: 0.95rem; }
+.estado-linea--total {
+  margin-top: 0.5rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed #ffb89c;
+  font-weight: 700;
+  color: #ff4d4f;
+}
+.estado-notas { margin: 0.5rem 0 0; font-size: 0.85rem; color: #777; }
+
+.estado-boton-principal {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.estado-boton-secundario {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.8rem;
+  border: 2px solid #ff4d4f;
+  border-radius: 12px;
+  background: transparent;
+  color: #ff4d4f;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
