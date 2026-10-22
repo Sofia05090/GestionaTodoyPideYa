@@ -104,3 +104,14 @@
         font-size: 14px;
     }
 }
+
+.inicio-boton-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
