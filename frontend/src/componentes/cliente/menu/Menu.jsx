@@ -8,6 +8,7 @@ import { useCarrito } from "../../../hooks/useCarrito";
 import BotonVolver from "../../compartido/ui/BotonVolver";
 import ContadorCantidad from "../../compartido/ui/ContadorCantidad";
 import ImagenPlato from "./ImagenPlato";
+import DetallePlato from "./DetallePlato";
 import "./Menu.css";
 
 // Quita mayúsculas y tildes para que "monona" encuentre "Moñona"
@@ -25,6 +26,7 @@ function Menu() {
   const [error, setError] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("Todos");
+  const [platoAbiertoId, setPlatoAbiertoId] = useState(null);
 
   useEffect(() => {
     let activo = true;
@@ -58,6 +60,9 @@ function Menu() {
     const coincideBusqueda = normalizar(producto.nombre).includes(normalizar(busqueda));
     return coincideCategoria && coincideBusqueda;
   });
+
+  // plato cuya ventana de detalle está abierta (undefined si no hay ninguno)
+  const platoAbierto = productos.find((producto) => producto.id === platoAbiertoId);
 
   return (
     <div className="menu-contenedor">
@@ -121,37 +126,61 @@ function Menu() {
               key={producto.id}
               className={producto.disponible ? "menu-tarjeta" : "menu-tarjeta menu-tarjeta--agotada"}
             >
-              <ImagenPlato src={producto.imagen} alt={producto.nombre} />
+              {/* imagen y texto abren el detalle; el precio y los botones quedan aparte */}
+              <div
+                className="menu-tarjeta-abrir"
+                role="button"
+                tabIndex={0}
+                onClick={() => setPlatoAbiertoId(producto.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setPlatoAbiertoId(producto.id);
+                  }
+                }}
+              >
+                <ImagenPlato src={producto.imagen} alt={producto.nombre} />
 
-              <div className="menu-tarjeta-cuerpo">
-                <h3 className="menu-tarjeta-nombre">{producto.nombre}</h3>
-                <p className="menu-tarjeta-descripcion">{producto.descripcion}</p>
-
-                <div className="menu-tarjeta-pie">
-                  <span className="menu-tarjeta-precio">{formatearPrecio(producto.precio)}</span>
-
-                  {!producto.disponible ? (
-                    <span className="menu-agotado">Agotado</span>
-                  ) : cantidad === 0 ? (
-                    <button
-                      className="menu-boton-agregar"
-                      type="button"
-                      onClick={() => agregar(producto)}
-                    >
-                      Agregar
-                    </button>
-                  ) : (
-                    <ContadorCantidad
-                      cantidad={cantidad}
-                      alCambiar={(nueva) => cambiarCantidad(producto.id, nueva)}
-                    />
-                  )}
+                <div className="menu-tarjeta-texto">
+                  <h3 className="menu-tarjeta-nombre">{producto.nombre}</h3>
+                  <p className="menu-tarjeta-descripcion">{producto.descripcion}</p>
                 </div>
+              </div>
+
+              <div className="menu-tarjeta-pie">
+                <span className="menu-tarjeta-precio">{formatearPrecio(producto.precio)}</span>
+
+                {!producto.disponible ? (
+                  <span className="menu-agotado">Agotado</span>
+                ) : cantidad === 0 ? (
+                  <button
+                    className="menu-boton-agregar"
+                    type="button"
+                    onClick={() => agregar(producto)}
+                  >
+                    Agregar
+                  </button>
+                ) : (
+                  <ContadorCantidad
+                    cantidad={cantidad}
+                    alCambiar={(nueva) => cambiarCantidad(producto.id, nueva)}
+                  />
+                )}
               </div>
             </article>
           );
         })}
       </div>
+
+      {platoAbierto && (
+        <DetallePlato
+          producto={platoAbierto}
+          cantidad={items.find((item) => item.id === platoAbierto.id)?.cantidad ?? 0}
+          alAgregar={() => agregar(platoAbierto)}
+          alCambiarCantidad={(nueva) => cambiarCantidad(platoAbierto.id, nueva)}
+          alCerrar={() => setPlatoAbiertoId(null)}
+        />
+      )}
     </div>
   );
 }
