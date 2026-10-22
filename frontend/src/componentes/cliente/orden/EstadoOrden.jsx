@@ -71,8 +71,7 @@ function EstadoOrden() {
   return (
     <div className="estado-contenedor">
       <h1 className="estado-titulo">Pedido #{orden.id}</h1>
-      <p className="estado-mesa">Mesa {orden.mesa}</p>
-
+      {orden.mesa && <p className="estado-mesa">Mesa {orden.mesa}</p>}
       <ol className="estado-pasos">
         {PASOS.map((paso, indice) => {
           let clase = "estado-paso";

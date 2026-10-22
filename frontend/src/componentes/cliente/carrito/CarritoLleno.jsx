@@ -17,15 +17,11 @@ function CarritoLleno() {
   const [error, setError] = useState("");
 
   async function confirmarPedido() {
-    if (!mesa.trim()) {
-      setError("Indica el número de tu mesa.");
-      return;
-    }
-
     setEnviando(true);
     setError("");
 
     try {
+      // la mesa es opcional: si está vacía, el pedido se envía igual
       const orden = await crearOrden({ mesa: mesa.trim(), items, notas });
       navegar(`/orden/${orden.id}`, { replace: true });
       vaciar();
@@ -61,7 +57,7 @@ function CarritoLleno() {
       </div>
 
       <div className="carrito-campo">
-        <label htmlFor="mesa">Número de mesa</label>
+        <label htmlFor="mesa">Número de mesa (opcional)</label>
         <input
           id="mesa"
           className="carrito-input"

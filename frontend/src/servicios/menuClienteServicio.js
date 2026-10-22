@@ -10,7 +10,7 @@
 //   }
 
 const productosPrueba = [
-  { id: "1", nombre: "Bandeja Paisa", descripcion: "Frijoles, arroz, carne molida, chicharrón, huevo, plátano, arepa", precio: 25000, categoria: "Platos Principales", disponible: true },
+  { id: "1", nombre: "Bandeja Paisa", descripcion: "Frijoles, arroz, carne molida, chicharrón, huevo, plátano y arepa", precio: 25000, categoria: "Platos Principales", disponible: true },
   { id: "2", nombre: "Pechuga a la Plancha", descripcion: "Pechuga de pollo con ensalada y papas a la francesa", precio: 20000, categoria: "Platos Principales", disponible: true },
   { id: "3", nombre: "Moñona con Carne", descripcion: "Carne sudada con arroz, huevo frito y papas", precio: 15000, categoria: "Moñonas", disponible: true },
   { id: "4", nombre: "Moñona con Pollo", descripcion: "Pollo a la brasa con arroz, huevo frito y papas", precio: 17000, categoria: "Moñonas", disponible: true },
