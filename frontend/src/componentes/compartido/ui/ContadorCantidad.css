@@ -1,0 +1,16 @@
+.contador { display: flex; align-items: center; gap: 0.4rem; }
+
+.contador-boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  cursor: pointer;
+}
+
+.contador-valor { min-width: 1.4rem; text-align: center; font-weight: 700; color: #2d2d2d; }
