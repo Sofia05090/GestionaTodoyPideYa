@@ -18,6 +18,7 @@ import Carrito from "./componentes/cliente/carrito/Carrito";
 import EstadoOrden from "./componentes/cliente/orden/EstadoOrden";
 import EditarOrden from "./componentes/cliente/orden/EditarOrden";
 
+
 function App() {
   return (
     // el provider envuelve todo para que el carrito se comparta entre las pantallas del cliente
