@@ -165,8 +165,8 @@
   color: #ff7a45;
 }
 
-.menu-tarjeta-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; padding: 0.75rem; }
-.menu-tarjeta-nombre { margin: 0; font-size: 0.95rem; color: #2d2d2d; }
+.menu-tarjeta-abrir { display: flex; flex: 1; flex-direction: column; cursor: pointer; }
+.menu-tarjeta-texto { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.75rem 0.75rem 0; }.menu-tarjeta-nombre { margin: 0; font-size: 0.95rem; color: #2d2d2d; }
 
 .menu-tarjeta-descripcion {
   margin: 0;
@@ -184,8 +184,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 0.4rem;
+  padding: 0.6rem 0.75rem 0.75rem;
 }
 
 .menu-tarjeta-precio { font-weight: 700; color: #ff4d4f; }
