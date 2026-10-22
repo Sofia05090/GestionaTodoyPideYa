@@ -140,3 +140,65 @@
 .menu-mensaje { padding: 2rem 0; text-align: center; color: #777; }
 .menu-mensaje--error { color: #d4380d; }
 
+.menu-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.menu-tarjeta {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(255, 77, 79, 0.1);
+}
+
+.imagen-plato { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+.imagen-plato--vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffe3d6, #ffd0c8);
+  color: #ff7a45;
+}
+
+.menu-tarjeta-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; padding: 0.75rem; }
+.menu-tarjeta-nombre { margin: 0; font-size: 0.95rem; color: #2d2d2d; }
+
+.menu-tarjeta-descripcion {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.78rem;
+  color: #777;
+}
+
+.menu-tarjeta-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+}
+
+.menu-tarjeta-precio { font-weight: 700; color: #ff4d4f; }
+
+.menu-boton-agregar {
+  padding: 0.45rem 0.8rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-tarjeta--agotada .imagen-plato { opacity: 0.55; filter: grayscale(1); }
+.menu-agotado { font-size: 0.8rem; font-weight: 700; color: #999; }

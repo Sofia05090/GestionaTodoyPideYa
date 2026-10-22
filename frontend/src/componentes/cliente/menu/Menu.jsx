@@ -1,4 +1,4 @@
-// [SOLO-WEB] Pantalla de menú: buscador, filtro por categoría, platos y botón del carrito
+// [SOLO-WEB] Pantalla de menú: buscador, filtro por categoría, platos en tarjetas y botón del carrito
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Search } from "lucide-react";
@@ -6,6 +6,8 @@ import { obtenerProductos, obtenerCategorias } from "../../../servicios/menuClie
 import { formatearPrecio } from "../../../servicios/carritoServicio";
 import { useCarrito } from "../../../hooks/useCarrito";
 import BotonVolver from "../../compartido/ui/BotonVolver";
+import ContadorCantidad from "../../compartido/ui/ContadorCantidad";
+import ImagenPlato from "./ImagenPlato";
 import "./Menu.css";
 
 // Quita mayúsculas y tildes para que "monona" encuentre "Moñona"
@@ -15,7 +17,7 @@ function normalizar(texto) {
 
 function Menu() {
   const navegar = useNavigate();
-  const { items, agregar, cantidadTotal } = useCarrito();
+  const { items, agregar, cambiarCantidad, cantidadTotal } = useCarrito();
 
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
@@ -112,28 +114,40 @@ function Menu() {
 
       <div className="menu-lista">
         {productosFiltrados.map((producto) => {
-          const enCarrito = items.find((item) => item.id === producto.id);
+          const cantidad = items.find((item) => item.id === producto.id)?.cantidad ?? 0;
 
           return (
-            <article key={producto.id} className="menu-tarjeta">
-              <div className="menu-tarjeta-info">
+            <article
+              key={producto.id}
+              className={producto.disponible ? "menu-tarjeta" : "menu-tarjeta menu-tarjeta--agotada"}
+            >
+              <ImagenPlato src={producto.imagen} alt={producto.nombre} />
+
+              <div className="menu-tarjeta-cuerpo">
                 <h3 className="menu-tarjeta-nombre">{producto.nombre}</h3>
                 <p className="menu-tarjeta-descripcion">{producto.descripcion}</p>
-                <p className="menu-tarjeta-precio">{formatearPrecio(producto.precio)}</p>
-              </div>
 
-              <button
-                className="menu-boton-agregar"
-                type="button"
-                onClick={() => agregar(producto)}
-                disabled={!producto.disponible}
-              >
-                {!producto.disponible
-                  ? "Agotado"
-                  : enCarrito
-                  ? `Agregar (${enCarrito.cantidad})`
-                  : "Agregar"}
-              </button>
+                <div className="menu-tarjeta-pie">
+                  <span className="menu-tarjeta-precio">{formatearPrecio(producto.precio)}</span>
+
+                  {!producto.disponible ? (
+                    <span className="menu-agotado">Agotado</span>
+                  ) : cantidad === 0 ? (
+                    <button
+                      className="menu-boton-agregar"
+                      type="button"
+                      onClick={() => agregar(producto)}
+                    >
+                      Agregar
+                    </button>
+                  ) : (
+                    <ContadorCantidad
+                      cantidad={cantidad}
+                      alCambiar={(nueva) => cambiarCantidad(producto.id, nueva)}
+                    />
+                  )}
+                </div>
+              </div>
             </article>
           );
         })}
