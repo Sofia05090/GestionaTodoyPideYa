@@ -5,6 +5,7 @@ import { ShoppingCart, Search } from "lucide-react";
 import { obtenerProductos, obtenerCategorias } from "../../../servicios/menuClienteServicio";
 import { formatearPrecio } from "../../../servicios/carritoServicio";
 import { useCarrito } from "../../../hooks/useCarrito";
+import BotonVolver from "../../compartido/ui/BotonVolver";
 import "./Menu.css";
 
 // Quita mayúsculas y tildes para que "monona" encuentre "Moñona"
@@ -59,7 +60,10 @@ function Menu() {
   return (
     <div className="menu-contenedor">
       <div className="menu-encabezado">
-        <h1 className="menu-titulo">Menú</h1>
+        <div className="menu-encabezado-izquierda">
+          <BotonVolver destino="/" etiqueta="Volver al inicio" />
+          <h1 className="menu-titulo">Menú</h1>
+        </div>
 
         <button
           className="menu-boton-carrito"
