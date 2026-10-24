@@ -6,20 +6,29 @@ const guardarSesion = (datos) => {
   localStorage.setItem("adminUsuario", JSON.stringify(datos.admin));
   return datos.admin;
 };
-
+//función para iniciar sesión del administrador, recibe correo y contraseña, devuelve el admin y guarda el token en el almacenamiento local
 export const iniciarSesion = async (correo, contrasena) => {
-  const respuesta = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ correo, contrasena }),
-  });
-  const datos = await respuesta.json();
-
-  if (!respuesta.ok) {
-    throw new Error(datos.mensaje || "No se pudo iniciar sesión.");
+  try {
+    const respuesta = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json" 
+      },
+      body: JSON.stringify({ correo, contrasena }),
+    });
+    
+    // se verifica si la respuesta es correcta, si no lo es se lanza un error con el mensaje del backend
+    if (!respuesta.ok) {
+      const datosError = await respuesta.json();
+      throw new Error(datosError.mensaje || "Error al iniciar sesión");
+    }
+    // si la respuesta es correcta, se guarda el token y los datos del admin
+    const datos = await respuesta.json();
+    return guardarSesion(datos);
+  } catch (error) {
+    console.error("Error en la petición fetch:", error);
+    throw error;
   }
-
-  return guardarSesion(datos);
 };
 
 export const registrarAdmin = async ({ nombre, correo, contrasena, codigoRegistro }) => {

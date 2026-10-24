@@ -4,6 +4,15 @@ const router             = express.Router();
 const pedidosControlador = require("./pedidos.controlador");
 const verificarToken     = require("../../middleware/verificarToken");
 const verificarTokenSeguimientoPedido = require("../../middleware/verificarTokenSeguimientoPedido");
+const {rateLimit} = require("express-rate-limit");
+
+const limitePedidosQr = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	limit: 30,
+	standardHeaders: "draft-8",
+	legacyHeaders: false,
+    message: { mensaje: "Se alcanzó el límite de solicitudes de pedidos. Intenta más tarde." },
+});
 
 // Rutas del panel del admin (requieren token JWT)
 // GET  /api/pedidos/activos pedidos pendiente o preparando
@@ -23,7 +32,7 @@ router.patch("/:id/estado", verificarToken, pedidosControlador.cambiarEstado);
 
 // Rutas del panel del cliente (publicas, sin token)
 // POST /api/pedidos el cliente crea su pedido desde el QR
-router.post("/", pedidosControlador.crearPedido);
+router.post("/", limitePedidosQr, pedidosControlador.crearPedido);
 
 // GET  /api/pedidos/:id/estado el cliente consulta si su pedido está listo
 router.get("/:id/estado", verificarTokenSeguimientoPedido, pedidosControlador.obtenerEstado);

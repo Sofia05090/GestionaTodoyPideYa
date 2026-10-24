@@ -38,11 +38,6 @@ const limitePedidosQr = rateLimit({
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
 app.use("/uploads", express.static(path.join(__dirname, "../imagenes")));
-app.use("/api", limiteApi);
-app.use("/api/auth/login", crearLimiteAutenticacion());
-app.use("/api/auth/registro", crearLimiteAutenticacion());
-app.use("/api/pedidos", limitePedidosQr);
-
 
 //se configura el puerto del servidor para escuchar las peticiones en el puerto 5000 en el archivo .env
 app.set("PUERTO", config.app.PUERTO);
@@ -51,5 +46,10 @@ app.set("PUERTO", config.app.PUERTO);
 app.use("/api/auth", authRutas);
 app.use("/api/menu", menuRutas);
 app.use("/api/pedidos", pedidosRutas);
+
+//limitadores
+
+app.use("/api/pedidos", limitePedidosQr);
+
 //se importa el objeto app para poder acceder a las rutas desde cualquier archivo del proyecto
 module.exports = app;
