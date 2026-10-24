@@ -42,6 +42,7 @@ function App() {
           {/* estas pantallas usan el diseño del administrador y su menu lateral tambien estas rutas son protegidas*/}
           <Route element={<RutaProtegida />}>
             <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="menu" element={<GestionMenu />} />
               <Route path="pedidos" element={<PedidosActivos />} />

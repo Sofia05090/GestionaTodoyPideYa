@@ -132,4 +132,23 @@ const registrarAdmin = async (req, res) => {
   }
 };
 
-module.exports = { iniciarSesion, actualizarPerfilAdmin, registrarAdmin };
+const obtenerPerfilAdmin = async (req, res) => {
+  try {
+    const admin =await authRepo.buscarAdminPorCorreo(req.admin.correo);
+    if (!admin) {
+      return res.status(404).json({ mensaje: "Administrador no encontrado" });
+    }
+    return re.status(200).json({
+      admin: {
+        id: admin.id,
+        nombre: admin.nombre,
+        correo: admin.correo
+      }
+    });
+  } catch (error) {
+    console.error("Error al obtener el perfil del administrador:", error);
+    return res.status(500).json({ mensaje: "No se pudo obtener el perfil" });
+      }
+    };
+
+module.exports = { iniciarSesion, registrarAdmin, obtenerPerfilAdmin, actualizarPerfilAdmin,};
