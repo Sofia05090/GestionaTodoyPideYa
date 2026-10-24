@@ -19,8 +19,6 @@ const crearAdmin = async (nombre, correo, contrasenaHash) => {
   return resultado.insertId;
 };
 
-module.exports = { buscarAdminPorCorreo, crearAdmin };
-
 // endpoint para actualizar perfil del administrador, incluyendo nombre y correo
 // actualizar los datos del administrador en la base de datos
 const actualizarAdmin = async (id, nombre, correo) => {
