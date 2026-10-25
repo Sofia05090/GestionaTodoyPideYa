@@ -1,0 +1,43 @@
+# Despliega automaticamente en el VPS cada vez que hay cambios en main.
+# Tambien se puede lanzar a mano desde la pestana Actions ("Run workflow").
+#
+# Secrets necesarios (Settings > Secrets and variables > Actions):
+#   VPS_HOST         IP del servidor
+#   VPS_SSH_KEY      llave privada del usuario "deploy" (solo puede ejecutar scripts/desplegar.sh)
+#   VPS_KNOWN_HOSTS  huella del servidor (ssh-keyscan), evita conectarse a un servidor falso
+
+name: Desplegar en produccion
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Un despliegue a la vez; si llegan varios pushes seguidos, esperan en fila
+concurrency:
+  group: produccion
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  desplegar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Configurar SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # El servidor ignora cualquier comando enviado y ejecuta scripts/desplegar.sh
+      - name: Desplegar
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: ssh -o BatchMode=yes -o ConnectTimeout=20 deploy@"$VPS_HOST"
