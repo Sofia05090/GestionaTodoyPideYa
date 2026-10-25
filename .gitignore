@@ -34,3 +34,7 @@ lerna-debug.log*
 *.env
 backend/.env
 frontend/.env
+!.env.example
+
+# Certificados de Let's Encrypt (se generan en el servidor)
+certbot/
