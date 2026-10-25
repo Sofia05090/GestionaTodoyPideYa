@@ -38,10 +38,14 @@ Para crear el primer administrador se usa la pantalla de registro con el código
 
 ## Actualizar a una nueva versión
 
+Es automático: cada push o merge a `main` ejecuta el workflow `.github/workflows/desplegar.yml`. El workflow entra por SSH como el usuario `deploy` y corre `scripts/desplegar.sh`, que trae `main`, reconstruye los contenedores y verifica que la API responda. El resultado se ve en la pestaña **Actions** del repo, que también tiene un botón "Run workflow" para relanzarlo a mano.
+
+La llave SSH del workflow (secret `VPS_SSH_KEY`) solo puede ejecutar ese script: en `/home/deploy/.ssh/authorized_keys` está marcada con `restrict,command=...`.
+
+Para desplegar a mano desde el servidor:
+
 ```bash
-cd /opt/gestiona
-git pull
-docker compose up -d --build
+sudo -u deploy /opt/gestiona/scripts/desplegar.sh
 ```
 
 Si solo cambió `nginx/default.conf`: `docker compose exec nginx nginx -s reload`.
