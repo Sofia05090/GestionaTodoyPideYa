@@ -1,7 +1,7 @@
 //aqui se define la funcion para obtener los pedidos activos desde el backend, usando fetch y el token de autenticacion
 import { obtenerToken } from "./authServicio";
 
-const API_URL = "http://localhost:5000/api/pedidos";
+const API_URL = "/api/pedidos";
 
 export const crearPedidoQR = async (pedido) => {
   const respuesta = await fetch(API_URL, {

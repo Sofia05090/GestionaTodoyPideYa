@@ -138,7 +138,7 @@ const obtenerPerfilAdmin = async (req, res) => {
     if (!admin) {
       return res.status(404).json({ mensaje: "Administrador no encontrado" });
     }
-    return re.status(200).json({
+    return res.status(200).json({
       admin: {
         id: admin.id,
         nombre: admin.nombre,

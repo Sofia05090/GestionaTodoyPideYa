@@ -34,6 +34,9 @@ const limitePedidosQr = rateLimit({
 	message: { mensaje: "Se alcanzó el límite de solicitudes de pedidos. Intenta más tarde." },
 });
 
+//en produccion el backend esta detras de Nginx: se confia en un proxy para leer la IP real del cliente (X-Forwarded-For) y que los limitadores no traten a todos como la misma IP
+app.set("trust proxy", 1);
+
 //middleware para que procese los datos en formato json y permitir el acceso desde react
 app.use(cors());
 app.use(express.json({ limit: "32kb" }));
