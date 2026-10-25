@@ -2,7 +2,7 @@
 // [MOCK] Hoy devuelve datos de prueba. Cuando la API esté lista, solo se cambia
 // el interior de obtenerProductos():
 //
-//   const API_URL = "http://localhost:5000/api/menu";
+//   const API_URL = "/api/menu";
 //   export async function obtenerProductos() {
 //     const respuesta = await fetch(API_URL);
 //     if (!respuesta.ok) throw new Error("Error al obtener el menú");

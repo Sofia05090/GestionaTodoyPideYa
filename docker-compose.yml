@@ -1,0 +1,77 @@
+# Produccion: MySQL + backend (Express) + Nginx (React + proxy + HTTPS) + renovacion de certificados.
+# Solo Nginx publica puertos (80/443); la base de datos y el backend quedan en la red interna.
+# Variables: copia .env.example a .env y completa los valores.
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=-05:00
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Falta MYSQL_ROOT_PASSWORD en .env}
+      MYSQL_DATABASE: ${NOMBRE_BD:-gestione_todo_y_pida_ya}
+      MYSQL_USER: ${USUARIO_BD:?Falta USUARIO_BD en .env}
+      MYSQL_PASSWORD: ${CONTRASENA_BD:?Falta CONTRASENA_BD en .env}
+    volumes:
+      - db_data:/var/lib/mysql
+      # Solo se ejecutan la primera vez (cuando el volumen db_data esta vacio)
+      - ./db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # Por TCP: durante la carga inicial MySQL no escucha en red, asi el backend espera a que termine
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root --password=\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      PUERTO: 5000
+      HOST_BD: db
+      PUERTO_BD: 3306
+      USUARIO_BD: ${USUARIO_BD}
+      CONTRASENA_BD: ${CONTRASENA_BD}
+      NOMBRE_BD: ${NOMBRE_BD:-gestione_todo_y_pida_ya}
+      JWT_SECRETO: ${JWT_SECRETO:?Falta JWT_SECRETO en .env}
+      REGISTRO_ADMIN_TOKEN: ${REGISTRO_ADMIN_TOKEN:?Falta REGISTRO_ADMIN_TOKEN en .env}
+      TZ: America/Bogota
+    volumes:
+      - uploads:/app/imagenes
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Se monta la carpeta (no el archivo) para que un git pull se vea dentro del contenedor
+      - ./nginx:/etc/nginx/conf.d:ro
+      - uploads:/var/www/uploads:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    # Recarga cada 6 h para tomar los certificados renovados
+    command: ["/bin/sh", "-c", "while :; do sleep 6h; nginx -s reload; done & exec nginx -g 'daemon off;'"]
+    depends_on:
+      - backend
+
+  certbot:
+    image: certbot/certbot:latest
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Intenta renovar cada 12 h (solo renueva cuando faltan menos de 30 dias)
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"]
+
+volumes:
+  db_data:
+  uploads:
