@@ -2,7 +2,7 @@
 import { obtenerToken } from "./authServicio";
 
 //se define la URL base de la API del back
-const API_URL = "http://localhost:5000/api/menu";
+const API_URL = "/api/menu";
 const encabezadosAdmin = () => ({
     "Content-Type": "application/json",
     Authorization: `Bearer ${obtenerToken()}`,
