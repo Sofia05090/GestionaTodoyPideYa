@@ -122,52 +122,52 @@ function Menu() {
           const cantidad = items.find((item) => item.id === producto.id)?.cantidad ?? 0;
 
           return (
-            <article
-              key={producto.id}
-              className={producto.disponible ? "menu-tarjeta" : "menu-tarjeta menu-tarjeta--agotada"}
-            >
-              {/* imagen y texto abren el detalle; el precio y los botones quedan aparte */}
-              <div
-                className="menu-tarjeta-abrir"
-                role="button"
-                tabIndex={0}
-                onClick={() => setPlatoAbiertoId(producto.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setPlatoAbiertoId(producto.id);
-                  }
-                }}
-              >
-                <ImagenPlato src={producto.imagen} alt={producto.nombre} />
-
-                <div className="menu-tarjeta-texto">
-                  <h3 className="menu-tarjeta-nombre">{producto.nombre}</h3>
-                  <p className="menu-tarjeta-descripcion">{producto.descripcion}</p>
-                </div>
-              </div>
-
-              <div className="menu-tarjeta-pie">
-                <span className="menu-tarjeta-precio">{formatearPrecio(producto.precio)}</span>
-
-                {!producto.disponible ? (
-                  <span className="menu-agotado">Agotado</span>
-                ) : cantidad === 0 ? (
-                  <button
-                    className="menu-boton-agregar"
-                    type="button"
-                    onClick={() => agregar(producto)}
-                  >
-                    Agregar
-                  </button>
-                ) : (
-                  <ContadorCantidad
-                    cantidad={cantidad}
-                    alCambiar={(nueva) => cambiarCantidad(producto.id, nueva)}
-                  />
-                )}
-              </div>
-            </article>
+           <article
+  key={producto.id}
+  className={producto.disponible ? "menu-tarjeta" : "menu-tarjeta menu-tarjeta--agotada"}
+>
+  <div
+    className="menu-tarjeta-abrir"
+    role="button"
+    tabIndex={0}
+    onClick={() => setPlatoAbiertoId(producto.id)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        setPlatoAbiertoId(producto.id);
+      }
+    }}
+  >
+    {/* imagen con precio superpuesto */}
+    <div className="menu-tarjeta-imagen-wrap">
+      <ImagenPlato src={producto.imagen} alt={producto.nombre} />
+      <span className="menu-tarjeta-precio-badge">{formatearPrecio(producto.precio)}</span>
+    </div>
+ 
+    <div className="menu-tarjeta-texto">
+      <h3 className="menu-tarjeta-nombre">{producto.nombre}</h3>
+    </div>
+  </div>
+ 
+  <div className="menu-tarjeta-pie">
+    {!producto.disponible ? (
+      <span className="menu-agotado">Agotado</span>
+    ) : cantidad === 0 ? (
+      <button
+        className="menu-boton-agregar"
+        type="button"
+        onClick={() => agregar(producto)}
+      >
+        Agregar
+      </button>
+    ) : (
+      <ContadorCantidad
+        cantidad={cantidad}
+        alCambiar={(nueva) => cambiarCantidad(producto.id, nueva)}
+      />
+    )}
+  </div>
+</article>
           );
         })}
       </div>

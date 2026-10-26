@@ -63,10 +63,10 @@ export const cerrarSesion = () => {
 
 export const actualizarPerfilAdmin = async ({ nombre, correo, contrasenaActual, contrasenaNueva }) => {
   const respuesta = await fetch(`${API_URL}/perfil`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${obtenerToken()}`,
+      Authorization: `Bearer ${obtenerToken()}`, //token del admin guardado en localstorage
     },
     body: JSON.stringify({ nombre, correo, contrasenaActual, contrasenaNueva }),
   });
@@ -75,9 +75,10 @@ export const actualizarPerfilAdmin = async ({ nombre, correo, contrasenaActual, 
   if (!respuesta.ok) {
     throw new Error(datos.mensaje || "No se pudo actualizar el perfil.");
   }
-
+//actualizar los datos del admin en localstorage para que el sidebar refleje los cambios
   const admin = datos.admin;
   localStorage.setItem("adminUsuario", JSON.stringify(admin));
+  //si el backend solicita un token nuevo, tambien lo reemplaza
   if (datos.token) {
     localStorage.setItem("adminToken", datos.token);
   }
