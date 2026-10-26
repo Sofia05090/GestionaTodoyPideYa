@@ -1,7 +1,7 @@
 // Pantalla de inicio de sesión
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChefHat } from "lucide-react";
+import { ArrowLeft, ChefHat } from "lucide-react";
 import { iniciarSesion } from "../../../servicios/authServicio";
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import InputCampo from "../../compartido/ui/InputCampo";
@@ -35,6 +35,15 @@ function LoginAdmin() {
   return (
     <div className="login-contenedor">
       <div className="login-card">
+        <button
+        type="button"
+        className="login-volver"
+        onClick={() => navegar("/")}
+        aria-label="volver al inicio"
+        >
+        <ArrowLeft size={18} />
+          volver
+        </button>
         {/* Ícono */}
         <div className="login-icono-contenedor">
           <ChefHat size={30} color="white" />
