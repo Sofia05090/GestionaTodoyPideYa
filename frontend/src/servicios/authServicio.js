@@ -1,5 +1,5 @@
 //este archivo contiene las funciones para manejar la autenticación del administrador, incluyendo inicio de sesión, registro y gestión de la sesión en el almacenamiento local del navegador
-const API_URL = "http://localhost:5000/api/auth";
+const API_URL = "/api/auth";
 
 const guardarSesion = (datos) => {
   localStorage.setItem("adminToken", datos.token);
