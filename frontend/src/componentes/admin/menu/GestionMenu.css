@@ -181,6 +181,31 @@
   font-family: var(--fuente-principal);
 }
 
+.modal-vista-previa-imagen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.modal-vista-previa-imagen img {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.modal-vista-previa-imagen p {
+  margin: 0;
+  padding: 12px;
+  color: #a33a32;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 /* Checkbox de disponibilidad en fila */
 .modal-toggle {
   display: flex;

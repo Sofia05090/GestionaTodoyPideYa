@@ -150,3 +150,33 @@
   width: auto;
   margin-top: 0;
 }
+
+@media (max-width: 520px) {
+  .modal-perfil-fondo {
+    padding: 12px;
+  }
+
+  .modal-perfil-contenido {
+    max-height: 90vh;
+    max-height: 90dvh;
+    padding: 1.5rem 1.1rem;
+  }
+
+  .modal-perfil-avatar {
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-perfil-botones {
+    gap: 0.6rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal-perfil-botones {
+    flex-direction: column-reverse;
+  }
+
+  .modal-perfil-botones .boton-primario {
+    width: 100%;
+  }
+}

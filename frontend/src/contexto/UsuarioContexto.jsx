@@ -23,4 +23,5 @@ export const ProveedorUsuario = ({ children }) => {
 };
 
 // hook personalizado para usar el contexto fácilmente en cualquier componente
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUsuario = () => useContext(UsuarioContexto);

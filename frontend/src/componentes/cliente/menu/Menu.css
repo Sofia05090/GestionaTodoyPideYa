@@ -241,11 +241,27 @@
   .menu-titulo { font-size: 1.5rem; }
  
   .menu-lista {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.6rem;
   }
  
   .menu-tarjeta-nombre { font-size: 0.82rem; }
   .menu-tarjeta-precio-badge { font-size: 0.78rem; }
   .menu-boton-agregar { font-size: 0.75rem; padding: 0.35rem 0.6rem; }
+}
+
+@media (max-width: 360px) {
+  .menu-contenedor {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .menu-tarjeta-nombre {
+    margin: 0.65rem 0.5rem;
+  }
+
+  .menu-tarjeta-pie {
+    padding-right: 0.35rem;
+    padding-left: 0.35rem;
+  }
 }

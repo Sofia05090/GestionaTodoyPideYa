@@ -1,12 +1,10 @@
-//Pantalla de incio de cliente - bienvenida, boton pedido y boton QR
-
+//Pantalla de incio de cliente - bienvenida, boton pedido
 import { Link, useNavigate } from "react-router-dom";
-import { QrCode } from "lucide-react";
 import "./Inicio.css";
 
 function Inicio() {
 
-    const navegar = useNavigate(); //para poder realizar cambios de pantallas entre incio, menu y escanear qr
+    const navegar = useNavigate(); //para poder realizar cambios de pantallas entre incio, escanear qr y menu
 
     return (
 
@@ -17,18 +15,11 @@ function Inicio() {
                 <button
                     className="inicio-boton inicio-boton-pedido"
                     type="button"
-                    onClick={() => navegar("/menu")}
+                    onClick={() => navegar("/escanear-qr")}
                 >
                     Comenzar pedido
                 </button>
-                <button
-                    className="inicio-boton inicio-boton-qr"
-                    type="button"
-                    onClick={() => navegar("/escanear-qr")}
-                >
-                    <QrCode size={20} />
-                    <span>Escanea el código QR de tu mesa</span>
-                </button>
+                {/* El botón de escanear QR fue eliminado de aquí */}
                 <Link to="/admin/login" className="inicio-acceso-admin">
                     Acceso administrador
                 </Link>

@@ -2,7 +2,6 @@
 import { useState } from "react"; // <-- 1. Aseguramos useState (ya lo tenías, está perfecto)
 import { NavLink, useNavigate } from "react-router-dom";
 import { cerrarSesion as cerrarSesionAdmin, obtenerAdmin } from "../../../servicios/authServicio";
-import { useUsuario } from "../../../contexto/UsuarioContexto";
 import ModalPerfil from "../../admin/perfil/ModalPerfil";
 import "./SidebarAdmin.css";
 //se importa los iconos de lucide-react para el menu de navegacion del admin
@@ -14,6 +13,7 @@ import {
   BarChart2, // barras de estadisticas
   LogOut, // flecha de cerrar sesion
   ChefHat, // logo gorro de chef
+  Package
 } from "lucide-react";
 
 //Se crea la seccion para añadir un objeto
@@ -43,13 +43,18 @@ const LINKS_NAVEGACION = [
     etiqueta: "Estadísticas",
     Icono: BarChart2,
   },
+  {
+    ruta: "/admin/inventario",
+    etiqueta: "Inventario",
+    Icono: Package, 
+  },
 ];
 
 function SidebarAdmin() {
   const navegar = useNavigate();
   const [correoAdmin] = useState(() => obtenerAdmin()?.correo ?? "");
   
-  // <-- 2. AGREGADO: Estado para abrir/cerrar el modal. (Dejé tu useState del correo intacto)
+  // Estado para abrir/cerrar el modal. (Dejé tu useState del correo intacto)
   const [modalPerfilAbierto, setModalPerfilAbierto] = useState(false);
 
   // Cerramos la sesion y volvemos a la pantalla de inicio de sesion
@@ -94,7 +99,7 @@ function SidebarAdmin() {
       {/*Pie */}
       <div className="sidebar-pie">
         
-        {/* <-- 3. AGREGADO: onClick al div para que abra el modal, y un cursor pointer para que se note que se puede hacer clic */}
+        {/* onClick al div para que abra el modal, y un cursor pointer para que se note que se puede hacer clic */}
         <div 
           className="sidebar-admin-info" 
           onClick={() => setModalPerfilAbierto(true)}
@@ -118,7 +123,7 @@ function SidebarAdmin() {
         </button>
       </div>
 
-      {/* <-- 4. AGREGADO: Renderizar el modal si el estado es verdadero */}
+      {/*renderiza el modal si el estado es verdadero */}
       {modalPerfilAbierto && (
         <ModalPerfil alCerrar={() => setModalPerfilAbierto(false)} />
       )}

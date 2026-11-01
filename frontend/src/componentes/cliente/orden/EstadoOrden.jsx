@@ -1,17 +1,17 @@
-// [SOLO-WEB] Seguimiento del pedido: consulta el estado cada 3 segundos
+//Seguimiento del pedido: consulta el estado cada 3 segundos
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom"; // AÑADIDO: Link
 import { obtenerOrden, ETIQUETAS_ESTADO } from "../../../servicios/ordenServicio";
 import { formatearPrecio } from "../../../servicios/carritoServicio";
 import "./EstadoOrden.css";
 
-const PASOS = ["pending", "preparing", "ready", "delivered"];
+const PASOS = ["pendiente", "preparando", "listo", "entregado"];
 
 const MENSAJES = {
-  pending: "Recibimos tu pedido. Pronto empezaremos a prepararlo.",
-  preparing: "Estamos preparando tu pedido.",
-  ready: "¡Tu pedido está listo!",
-  delivered: "Pedido entregado. ¡Buen provecho!",
+  pendiente: "Recibimos tu pedido. Pronto empezaremos a prepararlo.",
+  preparando: "Estamos preparando tu pedido.",
+  listo: "¡Tu pedido está listo!",
+  entregado: "Pedido entregado. ¡Buen provecho!",
 };
 
 function EstadoOrden() {
@@ -67,58 +67,73 @@ function EstadoOrden() {
   }
 
   const indiceActual = PASOS.indexOf(orden.estado);
+  
+  // Validación flexible para el estado
+  const estadoActual = orden?.estado ? String(orden.estado).toLowerCase() : "";
+  const sePuedeEditar = estadoActual === "pendiente" || estadoActual === "pending";
 
   return (
     <div className="estado-contenedor">
-      <h1 className="estado-titulo">Pedido #{orden.id}</h1>
-      {orden.mesa && <p className="estado-mesa">Mesa {orden.mesa}</p>}
-      <ol className="estado-pasos">
-        {PASOS.map((paso, indice) => {
-          let clase = "estado-paso";
-          if (indice < indiceActual) clase += " estado-paso--hecho";
-          if (indice === indiceActual) clase += " estado-paso--actual";
-
-          return (
-            <li key={paso} className={clase}>
-              <span className="estado-paso-punto" />
-              <span className="estado-paso-texto">{ETIQUETAS_ESTADO[paso]}</span>
-            </li>
-          );
-        })}
-      </ol>
-
-      <p className="estado-descripcion">{MENSAJES[orden.estado]}</p>
-
-      <div className="estado-tarjeta">
-        {orden.items.map((item) => (
-          <div key={item.id} className="estado-linea">
-            <span>
-              {item.cantidad}x {item.nombre}
-            </span>
-            <span>{formatearPrecio(item.precio * item.cantidad)}</span>
-          </div>
-        ))}
-
-        {orden.notas && <p className="estado-notas">📝 {orden.notas}</p>}
-
-        <div className="estado-linea estado-linea--total">
-          <span>Total</span>
-          <span>{formatearPrecio(orden.total)}</span>
+      <div className="estado-wrapper">
+        
+        <div className="estado-header">
+          <h1 className="estado-titulo">Pedido #{orden.id}</h1>
+          {orden.mesa && <p className="estado-mesa">Mesa {orden.mesa}</p>}
         </div>
-      </div>
 
-      {orden.estado === "pending" && (
-        <button
-          className="estado-boton-principal"
-          type="button"
-          onClick={() => navegar(`/orden/${orden.id}/editar`)}
-        >
-          Editar pedido
-        </button>
-      )}
-      <button className="estado-boton-secundario" type="button" onClick={() => navegar("/")}>
-        Volver al inicio
-      </button>
+        <ol className="estado-pasos">
+          {PASOS.map((paso, indice) => {
+            let clase = "estado-paso";
+            if (indice < indiceActual) clase += " estado-paso--hecho";
+            if (indice === indiceActual) clase += " estado-paso--actual";
+
+            return (
+              <li key={paso} className={clase}>
+                <span className="estado-paso-punto" />
+                <span className="estado-paso-texto">{ETIQUETAS_ESTADO[paso] || paso}</span>
+              </li>
+            );
+          })}
+        </ol>
+
+        <p className="estado-descripcion">{MENSAJES[orden.estado] || "Actualizando estado..."}</p>
+
+        <div className="estado-tarjeta">
+          <div className="estado-lista-items">
+            {orden.items.map((item) => (
+              <div key={item.id} className="estado-linea">
+                <span>{item.cantidad}x {item.nombre}</span>
+                <span>{formatearPrecio(item.precio * item.cantidad)}</span>
+              </div>
+            ))}
+          </div>
+
+          {orden.notas && <p className="estado-notas"> {orden.notas}</p>}
+
+          <div className="estado-linea estado-linea--total">
+            <span>Total</span>
+            <span>{formatearPrecio(orden.total)}</span>
+          </div>
+        </div>
+
+        <div className="estado-acciones">
+          {/* CAMBIO AQUÍ: Usamos el componente Link en lugar de button */}
+          {sePuedeEditar && (
+            <Link 
+              to={`/orden/${orden.id}/editar`} 
+              className="estado-boton-principal"
+              style={{ textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              Editar pedido
+            </Link>
+          )}
+          
+          <button className="estado-boton-secundario" type="button" onClick={() => navegar("/")}>
+            Volver al inicio
+          </button>
+        </div>
+
+      </div>
     </div>
   );
 }
