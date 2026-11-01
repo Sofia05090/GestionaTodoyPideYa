@@ -87,7 +87,24 @@
     }
 
     .inicio-titulo {
-        font-size: 52px;
+        font-size: clamp(2.5rem, 12vw, 3.25rem);
+    }
+
+    @media (max-width: 360px) {
+        .inicio-contenedor {
+            padding: 24px 16px;
+        }
+
+        .inicio-subtitulo {
+            margin-bottom: 36px;
+            font-size: 18px;
+        }
+
+        .inicio-boton {
+            min-height: 64px;
+            padding: 14px 18px;
+            font-size: 18px;
+        }
     }
 
     .inicio-subtitulo {
@@ -105,55 +122,4 @@
         margin-top: 18px;
         font-size: 14px;
     }
-}
-
-/*estilos para el boton de escanear QR*/
-.inicio-boton-qr {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  margin-top: 1rem;
-  
-  /*tamaño del boton*/
-  width: 100%; 
-  min-height: 96px; 
-  padding: 20px 32px; 
-  border-radius: 999px;
-  
-  /*fondo casi invisible (5% de blanco) */
-  background-color: rgba(255, 255, 255, 0.05); 
-  
-  /*borde más sutil (40% de blanco) */
-  border: 1.5px solid rgba(255, 255, 255, 0.4); 
-  
-  /*texto blanco */
-  color: white;
-  
-  font: inherit;
-  font-size: 24px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 200ms ease;
-  
-  /*difuminado de atras */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-/*efecto al pasar el mouse */
-.inicio-boton-qr:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.8);
-  transform: translateY(-2px);
-}
-
-/* ajuste para celulares */
-@media (max-width: 600px) {
-  .inicio-boton-qr {
-    min-height: 72px;
-    padding: 16px 12px; /* Se redujo el padding lateral de 22px a 12px */
-    font-size: 16px;    /* Se redujo la letra de 20px a 16px */
-    gap: 0.4rem;        /* Se redujo el espacio del icono de 0.6rem a 0.4rem */
-  }
 }

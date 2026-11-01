@@ -1,85 +1,269 @@
+/*CONTENEDOR GENERAL */
 .estado-contenedor {
   min-height: 100vh;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 1.25rem 1rem;
+  width: 100%;
+  background-color: #fcfaf8;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  padding: 1.5rem;
   box-sizing: border-box;
-  background: #fff7f2;
 }
 
-.estado-titulo { margin: 0; font-size: 1.5rem; color: #ff4d4f; }
-.estado-mesa { margin: 0.25rem 0 1.25rem; color: #777; }
-.estado-mensaje { padding: 2rem 0; text-align: center; color: #777; }
+/*WRAPPER*/
+.estado-wrapper {
+  width: 100%;
+  max-width: 100%;
+  display: flex !important;
+  flex-direction: column !important; /* FUERZA LA COLUMNA */
+  gap: 24px !important; /* SEPARA CADA BLOQUE */
+}
 
-.estado-pasos {
+/*ENCABEZADO */
+.estado-header {
   display: flex;
-  justify-content: space-between;
-  margin: 0 0 1rem;
-  padding: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.estado-titulo { 
+  margin: 0 !important; 
+  font-size: 1.8rem; 
+  font-weight: 800;
+  color: #ef3948; 
+}
+
+.estado-mesa { 
+  margin: 0 !important; 
+  color: #6b7280; 
+  font-size: 1rem; 
+}
+
+/*BARRA DE PROGRESO */
+.estado-pasos {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  margin: 0 !important;
+  padding: 0 !important;
   list-style: none;
+  width: 100%;
 }
 
 .estado-paso {
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+}
+
+.estado-paso-punto {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.estado-paso::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+
+.estado-paso:last-child::before {
+  display: none;
+}
+
+.estado-paso--hecho::before, 
+.estado-paso--actual::before {
+  background-color: #ef3948;
+}
+
+.estado-paso-texto {
   font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 600;
   text-align: center;
-  color: #aaa;
+  margin-top: 4px;
 }
 
-.estado-paso-punto { width: 14px; height: 14px; border-radius: 50%; background: #e4e4e4; }
-.estado-paso--hecho { color: #ff7a45; }
-.estado-paso--hecho .estado-paso-punto { background: #ff7a45; }
-.estado-paso--actual { font-weight: 700; color: #ff4d4f; }
+.estado-paso--hecho .estado-paso-punto {
+  background-color: #ef3948;
+}
+
+.estado-paso--hecho .estado-paso-texto {
+  color: #ef3948;
+}
+
 .estado-paso--actual .estado-paso-punto {
-  background: #ff4d4f;
-  box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.2);
+  background-color: #ef3948;
+  box-shadow: 0 0 0 5px rgba(239, 57, 72, 0.15);
+  width: 18px;
+  height: 18px;
 }
 
-.estado-descripcion { margin: 0 0 1.25rem; text-align: center; font-weight: 600; color: #2d2d2d; }
+.estado-paso--actual .estado-paso-texto {
+  color: #ef3948;
+  font-weight: 700;
+}
+
+/*MENSAJE Y TARJETA*/
+.estado-descripcion { 
+  margin: 0 !important; 
+  text-align: center; 
+  font-weight: 700; 
+  color: #111827; 
+  font-size: 1.05rem;
+}
 
 .estado-tarjeta {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.08);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f3f4f6;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
 }
 
-.estado-linea { display: flex; justify-content: space-between; padding: 0.3rem 0; font-size: 0.95rem; }
-.estado-linea--total {
-  margin-top: 0.5rem;
-  padding-top: 0.7rem;
-  border-top: 1px dashed #ffb89c;
-  font-weight: 700;
-  color: #ff4d4f;
+.estado-lista-items {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
 }
-.estado-notas { margin: 0.5rem 0 0; font-size: 0.85rem; color: #777; }
+
+.estado-linea { 
+  display: flex !important; 
+  justify-content: space-between !important; 
+  font-size: 1rem; 
+  color: #1f2937; 
+}
+
+.estado-linea--total {
+  margin-top: 8px !important;
+  padding-top: 16px;
+  border-top: 1px dashed #ffb89c;
+  font-weight: 800;
+  color: #ef3948;
+  font-size: 1.1rem;
+}
+
+.estado-notas { 
+  margin: 0 !important; 
+  font-size: 0.9rem; 
+  color: #6b7280; 
+  font-style: italic;
+}
+
+/* BOTONES */
+.estado-acciones {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
 
 .estado-boton-principal {
   width: 100%;
-  padding: 0.9rem;
+  padding: 16px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ff7a45, #ff4d4f);
+  border-radius: 30px;
+  background: linear-gradient(90deg, #ed3949, #f6a15f);
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.estado-boton-principal:hover {
+  transform: translateY(-2px);
 }
 
 .estado-boton-secundario {
   width: 100%;
-  margin-top: 0.6rem;
-  padding: 0.8rem;
-  border: 2px solid #ff4d4f;
-  border-radius: 12px;
+  padding: 14px;
+  border: 2px solid #ef3948;
+  border-radius: 30px;
   background: transparent;
-  color: #ff4d4f;
+  color: #ef3948;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.estado-mensaje {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 2rem;
+}
+
+/*7. MEDIA QUERIES (PC Y TABLET) */
+@media (min-width: 768px) {
+  .estado-contenedor {
+    padding: 4rem 2rem;
+    align-items: center !important; /* Centrado vertical en PC */
+  }
+
+  .estado-wrapper {
+    max-width: 650px;
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    gap: 2rem !important;
+  }
+
+  .estado-titulo {
+    font-size: 2.2rem;
+  }
+
+  /* Tarjeta interior sutil en PC */
+  .estado-tarjeta {
+    background-color: #f9fafb;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+
+  /* Botones lado a lado */
+  .estado-acciones {
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+
+  .estado-boton-principal,
+  .estado-boton-secundario {
+    flex: 1;
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 420px) {
+  .estado-contenedor {
+    padding: 1rem 0.75rem;
+  }
+
+  .estado-paso-texto {
+    font-size: 0.65rem;
+    overflow-wrap: anywhere;
+  }
+
+  .estado-tarjeta {
+    padding: 1rem;
+  }
+
+  .estado-linea {
+    gap: 12px;
+    font-size: 0.9rem;
+  }
 }

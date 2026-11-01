@@ -1,18 +1,23 @@
 // Endpoints del módulo de menú
 const express         = require("express");
 const multer          = require("multer");
+const fs              = require("fs");
 const path            = require("path");
 const { randomUUID }  = require("crypto");
 const { rateLimit }   = require("express-rate-limit");
 const router          = express.Router();
 const menuControlador = require("./menu.controlador");
+const menuEventos     = require("./menu.eventos");
 const verificarToken  = require("../../middleware/verificarToken");
 
 // la configuración que define donde y con que nombre se guardan las imágenes
+const directorioImagenes = path.join(__dirname, "../../../imagenes/platos");
 const almacenamiento = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Las imágenes se guardan en backend/imagenes/platos/
-    cb(null, path.join(__dirname, "../../../imagenes/platos"));
+  destination: (_req, _file, cb) => {
+    fs.mkdir(directorioImagenes, { recursive: true }, (error) => {
+      if (error) return cb(error);
+      cb(null, directorioImagenes);
+    });
   },
   filename: (req, file, cb) => {
     cb(null, `${randomUUID()}${path.extname(file.originalname).toLowerCase()}`);
@@ -43,6 +48,7 @@ const limitarCambiosMenu = rateLimit({
 });
 
 // GET  /api/menu lista productos (público: lo ve el cliente también)
+router.get("/eventos", menuEventos.conectarCliente);
 router.get("/", menuControlador.obtenerMenu);
 
 // POST /api/menu/lote agrega varios productos en una sola operación (solo admin)
