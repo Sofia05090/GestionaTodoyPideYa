@@ -40,4 +40,4 @@ jobs:
       - name: Desplegar
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: ssh -o BatchMode=yes -o ConnectTimeout=20 deploy@"$VPS_HOST"
+        run: ssh -o BatchMode=yes -o ConnectTimeout=20 root@"$VPS_HOST"
