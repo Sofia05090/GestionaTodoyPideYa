@@ -53,3 +53,18 @@
   font-size: 0.9rem;
   cursor: pointer;
 }
+
+@media (max-width: 480px) {
+  .qr-contenedor {
+    min-height: 100svh;
+    padding: 1rem;
+  }
+
+  .qr-tarjeta {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .qr-titulo {
+    font-size: 1.25rem;
+  }
+}

@@ -2,6 +2,7 @@
 // su imagen, nombre, categoria, descripción, precio y disponibilidad
 // También tiene botones para editarlo o eliminarlo
 
+import { useState } from "react";
 import { Pencil, Trash2, ImageOff, CheckCircle } from "lucide-react";
 import "./TarjetaPlato.css";
 
@@ -19,18 +20,7 @@ function TarjetaPlato({ plato, alEditar, alEliminar }) {
       {/* Imagen y aviso de disponibilidad */}
       <div className="tarjeta-plato__imagen-contenedor">
 
-        {plato.urlImagen ? (
-          <img
-            src={plato.urlImagen}
-            alt={plato.nombre}
-            className="tarjeta-plato__imagen"
-          />
-        ) : (
-          // Si todavia no tiene foto, mostramos un icono como reemplazo
-          <div className="tarjeta-plato__sin-imagen">
-            <ImageOff size={40} color="#CCCCCC" />
-          </div>
-        )}
+        <ImagenTarjeta key={plato.urlImagen} src={plato.urlImagen} alt={plato.nombre} />
 
         {/* Chip verde si esta disponible, rojo si esta agotado */}
         <span className={`tarjeta-plato__chip ${plato.disponible ? "chip--disponible" : "chip--agotado"}`}>
@@ -87,6 +77,27 @@ function TarjetaPlato({ plato, alEditar, alEliminar }) {
       </div>
 
     </div>
+  );
+}
+
+function ImagenTarjeta({ src, alt }) {
+  const [error, setError] = useState(false);
+
+  if (!src || error) {
+    return (
+      <div className="tarjeta-plato__sin-imagen">
+        <ImageOff size={40} color="#CCCCCC" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="tarjeta-plato__imagen"
+      onError={() => setError(true)}
+    />
   );
 }
 

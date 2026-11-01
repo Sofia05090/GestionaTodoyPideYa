@@ -2,8 +2,8 @@
 .admin-layout {
   display: grid;
   grid-template-columns: 1fr 260px; /* contenido sidebar */
-  height: 100%; /* ocupa toda la altura */
-  overflow: hidden; /* evita scroll doble en la página */
+  height: 100vh; /*forzamos a que ocupe exactamente el alto de la pantalla */
+  overflow: hidden; /*evita scroll doble en la página */
 }
 
 /* El contenido puede hacer scroll independiente del sidebar */
@@ -12,4 +12,52 @@
   padding: 2rem;
   background-color: var(--color-fondo);
   min-width: 0;
+  height: 100%;
+}
+
+/*ocultar la barra de desplazamiento*/
+.admin-contenido::-webkit-scrollbar {
+  display: none; 
+}
+
+.admin-contenido {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+@media (max-width: 1024px) and (min-width: 761px) {
+  .admin-layout {
+    grid-template-columns: minmax(0, 1fr) 230px;
+  }
+
+  .admin-contenido {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+    min-height: 100svh;
+    height: auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .admin-contenido {
+    order: 1;
+    width: 100%;
+    height: auto;
+    flex: 1;
+    overflow: visible;
+    padding: 1rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-contenido {
+    padding: 0.75rem;
+  }
 }

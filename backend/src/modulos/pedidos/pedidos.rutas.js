@@ -31,8 +31,12 @@ router.get("/historial", verificarToken, pedidosControlador.obtenerHistorial);
 router.patch("/:id/estado", verificarToken, pedidosControlador.cambiarEstado);
 
 // Rutas del panel del cliente (publicas, sin token)
+
 // POST /api/pedidos el cliente crea su pedido desde el QR
 router.post("/", limitePedidosQr, pedidosControlador.crearPedido);
+
+// PATCH /api/pedidos/:id el cliente edita su pedido
+router.patch("/:id", verificarTokenSeguimientoPedido, pedidosControlador.actualizarPedido);
 
 // GET  /api/pedidos/:id/estado el cliente consulta si su pedido está listo
 router.get("/:id/estado", verificarTokenSeguimientoPedido, pedidosControlador.obtenerEstado);

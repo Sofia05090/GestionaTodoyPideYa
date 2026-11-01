@@ -11,8 +11,10 @@ function InputCampo({
     alCambiar,
     placeholder = "",
     requerido = false,
+    min,
     minLength,
     maxLength,
+    step,
     autoComplete,
 }) {
     return (
@@ -32,8 +34,10 @@ function InputCampo({
                 onChange={alCambiar}
                 placeholder={placeholder}
                 required={requerido}
+                min={min}
                 minLength={minLength}
                 maxLength={maxLength}
+                step={step}
                 autoComplete={autoComplete}
                 className="input-campo-input"
             />

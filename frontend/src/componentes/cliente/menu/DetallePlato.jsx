@@ -37,7 +37,11 @@ function DetallePlato({ producto, cantidad, alAgregar, alCambiarCantidad, alCerr
         </button>
 
         <div className="detalle-imagen">
-          <ImagenPlato src={producto.imagen} alt={producto.nombre} />
+          <ImagenPlato
+            key={producto.imagen}
+            src={producto.imagen}
+            alt={producto.nombre}
+          />
         </div>
 
         {/* esta zona es la única que hace scroll */}
