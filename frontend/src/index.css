@@ -38,4 +38,19 @@ body {
   font-family: var(--fuente-principal);
   background-color: var(--color-fondo);
   color: var(--color-texto);
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }

@@ -95,8 +95,8 @@ const actualizarProducto = async (id, { categoria_id, categoria, nombre, descrip
   if (!categoriaId) {
     throw new Error(`La categoría "${categoria}" no existe`);
   }
-if (urlImagen) {
-  //si hay una imaagen nueva, actualizamos todo incluyendo la foto
+if (urlImagen !== null && urlImagen !== undefined) {
+  //Si se envió una imagen o una URL vacía, actualizamos también la imagen.
   await conexion.query(
     `UPDATE productos SET categoria_id = ?, nombre = ?, descripcion = ?, precio = ?, url_imagen = ? WHERE id = ?`,
     [categoriaId, nombre, descripcion, precio, urlImagen, id]

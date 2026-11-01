@@ -1,7 +1,7 @@
 // servicio del menú para el cliente
 // se conecta al backend para traer los platos y las categorias del menu
 // no necesita token de autenticación porque el menu es publico
-const API_URL = "http://localhost:5000/api/menu";
+const API_URL = "/api/menu";
 
 //funcion que convierte al formato que esperan los componentes de React
 function adaptarProducto(plato) {
@@ -12,14 +12,14 @@ function adaptarProducto(plato) {
     precio: Number(plato.precio),
     categoria: plato.categoria ?? "Sin categoría",
     disponible: Boolean(plato.disponible),
-    imagen: plato.imagen_url ?? plato.imagen ?? null,
+    imagen: plato.urlImagen ?? plato.imagen_url ?? plato.imagen ?? null,
     ingredientes: plato.ingredientes ?? [],
     tiempoPreparacion: plato.tiempo_preparacion ?? null,
   };
 }
 // funcion para obtener los productos del menú desde la API
 export async function obtenerProductos() {
-  const respuesta = await fetch(API_URL);
+  const respuesta = await fetch(API_URL, { cache: "no-store" });
   if (!respuesta.ok) {
     const datos = await respuesta.json().catch(() => ({}));
     throw new Error(datos.mensaje || "No se pudo cargar el menú");
@@ -32,4 +32,11 @@ export async function obtenerProductos() {
 export async function obtenerCategorias() {
   const productos = await obtenerProductos();
   return [...new Set(productos.map((producto) => producto.categoria))];
+}
+
+export function escucharCambiosMenu(alCambiar) {
+  const eventos = new EventSource(`${API_URL}/eventos`);
+  eventos.onopen = alCambiar;
+  eventos.addEventListener("menu-actualizado", alCambiar);
+  return () => eventos.close();
 }

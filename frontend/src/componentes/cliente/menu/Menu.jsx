@@ -2,7 +2,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Search } from "lucide-react";
-import { obtenerProductos, obtenerCategorias } from "../../../servicios/menuClienteServicio";
+import {
+  escucharCambiosMenu,
+  obtenerProductos,
+} from "../../../servicios/menuClienteServicio";
 import { formatearPrecio } from "../../../servicios/carritoServicio";
 import { useCarrito } from "../../../hooks/useCarrito";
 import BotonVolver from "../../compartido/ui/BotonVolver";
@@ -30,26 +33,33 @@ function Menu() {
 
   useEffect(() => {
     let activo = true;
+    let solicitudActual = 0;
 
     async function cargarDatos() {
+      const solicitud = ++solicitudActual;
       try {
         const productosObtenidos = await obtenerProductos();
-        const categoriasObtenidas = await obtenerCategorias();
-
-        if (!activo) return;
+        if (!activo || solicitud !== solicitudActual) return;
         setProductos(productosObtenidos);
-        setCategorias(categoriasObtenidas);
+        setCategorias([
+          ...new Set(productosObtenidos.map((producto) => producto.categoria)),
+        ]);
+        setError("");
       } catch (e) {
-        if (activo) setError(e.message || "No se pudo cargar el menú.");
+        if (activo && solicitud === solicitudActual) {
+          setError(e.message || "No se pudo cargar el menú.");
+        }
       } finally {
-        if (activo) setCargando(false);
+        if (activo && solicitud === solicitudActual) setCargando(false);
       }
     }
 
     cargarDatos();
+    const dejarDeEscuchar = escucharCambiosMenu(cargarDatos);
 
     return () => {
       activo = false;
+      dejarDeEscuchar();
     };
   }, []);
 
@@ -140,7 +150,11 @@ function Menu() {
   >
     {/* imagen con precio superpuesto */}
     <div className="menu-tarjeta-imagen-wrap">
-      <ImagenPlato src={producto.imagen} alt={producto.nombre} />
+      <ImagenPlato
+        key={producto.imagen}
+        src={producto.imagen}
+        alt={producto.nombre}
+      />
       <span className="menu-tarjeta-precio-badge">{formatearPrecio(producto.precio)}</span>
     </div>
  

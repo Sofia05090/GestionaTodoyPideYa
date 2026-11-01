@@ -5,7 +5,7 @@
 // CRUD agregar, editar, cambiar disponibilidad del plato y eliminar
 //  se usa el Hook useCamposFormulario maneja todos los campos del formulario con un solo useState en vez de uno por cada campo
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 // Son botones y campos que también usamos en otras pantallas
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
@@ -60,7 +60,9 @@ function GestionMenu() {
   const [guardando, setGuardando] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("Todas");
-  const [, setImagenSeleccionada] = useState(null);
+  const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
+  const [urlImagenLocal, setUrlImagenLocal] = useState("");
+  const referenciaUrlImagenLocal = useRef("");
 
   // el hook useCamposFormulario nos da los campos del formulario, una funcion para manejar los cambios y otra para reiniciar el formulario
   const {
@@ -118,6 +120,36 @@ function GestionMenu() {
     };
   }, []);
 
+  useEffect(
+    () => () => {
+      if (referenciaUrlImagenLocal.current) {
+        URL.revokeObjectURL(referenciaUrlImagenLocal.current);
+      }
+    },
+    [],
+  );
+
+  function seleccionarImagen(evento) {
+    const archivo = evento.target.files?.[0] || null;
+    if (referenciaUrlImagenLocal.current) {
+      URL.revokeObjectURL(referenciaUrlImagenLocal.current);
+    }
+
+    const nuevaUrlLocal = archivo ? URL.createObjectURL(archivo) : "";
+    referenciaUrlImagenLocal.current = nuevaUrlLocal;
+    setUrlImagenLocal(nuevaUrlLocal);
+    setImagenSeleccionada(archivo);
+  }
+
+  function limpiarImagenSeleccionada() {
+    if (referenciaUrlImagenLocal.current) {
+      URL.revokeObjectURL(referenciaUrlImagenLocal.current);
+      referenciaUrlImagenLocal.current = "";
+    }
+    setUrlImagenLocal("");
+    setImagenSeleccionada(null);
+  }
+
   // mostramos solo los platos que coinciden con la búsqueda y la categoria
   const platosFiltrados = platos.filter((plato) => {
     const coincideNombre = plato.nombre
@@ -132,6 +164,8 @@ function GestionMenu() {
 
   // Al pulsar el boton abrimos el formulario vacio o con los datos del plato
   function abrirModal(platoExistente = null) {
+    limpiarImagenSeleccionada();
+
     if (platoExistente) {
       setPlatoEditando(platoExistente);
       reiniciar({
@@ -154,6 +188,7 @@ function GestionMenu() {
   function cerrarModal() {
     setModalAbierto(false);
     setPlatoEditando(null);
+    limpiarImagenSeleccionada();
     reiniciar();
   }
   // Guardamos el plato nuevo o editado en la base de datos
@@ -161,8 +196,13 @@ function GestionMenu() {
     evento.preventDefault();
 
     const precio = Number(campos.precio);
-    if (!Number.isInteger(precio) || precio < 0) {
-      alert("El precio debe ser un número entero");
+    if (
+      !campos.precio ||
+      !/^\d+$/.test(String(campos.precio).trim()) ||
+      !Number.isSafeInteger(precio) ||
+      precio < 0
+    ) {
+      alert("El precio debe expresarse en pesos enteros, sin decimales.");
       return;
     }
     setGuardando(true);
@@ -178,10 +218,10 @@ function GestionMenu() {
       };
       if (platoEditando) {
         //si estamos editando, llamamos a PUT
-        await actualizarProducto(platoEditando.id, datosPlato);
+        await actualizarProducto(platoEditando.id, datosPlato, imagenSeleccionada);
       } else {
         //si es nuevo, llamamos a POST
-        await crearProducto(datosPlato);
+        await crearProducto(datosPlato, imagenSeleccionada);
       }
       await cargarPlatos();
       cerrarModal();
@@ -323,7 +363,8 @@ function GestionMenu() {
           guardando={guardando}
           esEdicion={platoEditando !== null}
           categoriasSelector={categoriasSelector}
-          alSeleccionarImagen={(e) => setImagenSeleccionada(e.target.files[0])}
+          alSeleccionarImagen={seleccionarImagen}
+          urlImagenLocal={urlImagenLocal}
         />
       )}
     </div>
@@ -341,6 +382,7 @@ function ModalPlato({
   esEdicion,
   categoriasSelector,
   alSeleccionarImagen,
+  urlImagenLocal,
 }) {
   return (
     // Al hacer clic fuera del formulario se cierra
@@ -413,14 +455,21 @@ function ModalPlato({
             alCambiar={(e) => manejarCambio("urlImagen", e.target.value)}
             placeholder="Ej: https://ejemplo.com/imagen.jpg"
           />
+          {(urlImagenLocal || campos.urlImagen?.trim()) && (
+            <VistaPreviaImagen
+              key={urlImagenLocal || campos.urlImagen.trim()}
+              src={urlImagenLocal || campos.urlImagen.trim()}
+            />
+          )}
 
           {/* Selector de imagen */}
           <div className="modal-campo-grupo">
-            <label htmlFor="imagen">Foto del plato</label>
+            <label htmlFor="imagen">Foto del plato (cámara o archivo)</label>
             <input
               id="imagen"
               type="file"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.webp,.gif"
+              capture="environment"
               onChange={alSeleccionarImagen}
               className="modal-input-archivo"
             />
@@ -454,6 +503,27 @@ function ModalPlato({
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+function VistaPreviaImagen({ src }) {
+  const [error, setError] = useState(false);
+
+  return (
+    <div className="modal-vista-previa-imagen">
+      {error ? (
+        <p role="status">
+          No se pudo cargar la imagen. Usa un enlace directo al archivo de
+          imagen, no una página para compartirla.
+        </p>
+      ) : (
+        <img
+          src={src}
+          alt="Vista previa del plato"
+          onError={() => setError(true)}
+        />
+      )}
     </div>
   );
 }

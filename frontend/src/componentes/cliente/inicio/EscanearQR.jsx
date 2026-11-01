@@ -1,5 +1,3 @@
-// [SOLO-WEB] Por ahora la mesa se escribe a mano.
-// Pendiente: lector de QR real (en React Native, con la cámara).
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QrCode } from "lucide-react";
@@ -8,12 +6,18 @@ import "./EscanearQR.css";
 
 function EscanearQR() {
   const navegar = useNavigate();
-  const { mesa, setMesa } = useCarrito();
-  const [valor, setValor] = useState(mesa);
+  const { setMesa } = useCarrito();
+  const [valor, setValor] = useState("");
+  const [error, setError] = useState("");
 
   function confirmar(evento) {
     evento.preventDefault();
-    if (!valor.trim()) return;
+    
+    if (!valor.trim()) {
+      setError("Debes ingresar tu número de mesa para continuar.");
+      return;
+    }
+    
     setMesa(valor.trim());
     navegar("/menu");
   }
@@ -24,7 +28,7 @@ function EscanearQR() {
         <QrCode size={48} className="qr-icono" />
         <h1 className="qr-titulo">Tu mesa</h1>
         <p className="qr-texto">
-          Aquí irá el lector del código QR. Por ahora escribe el número de tu mesa.
+          Escribe el número de tu mesa
         </p>
 
         <form onSubmit={confirmar}>
@@ -32,9 +36,13 @@ function EscanearQR() {
             className="qr-input"
             type="text"
             value={valor}
-            onChange={(e) => setValor(e.target.value)}
+            onChange={(e) => {
+              setValor(e.target.value);
+              setError("");
+            }}
             placeholder="Ej: 5"
           />
+          {error && <p style={{ color: "#d4380d", fontSize: "0.85rem", marginBottom: "10px" }}>{error}</p>}
           <button className="qr-boton" type="submit">
             Continuar al menú
           </button>
