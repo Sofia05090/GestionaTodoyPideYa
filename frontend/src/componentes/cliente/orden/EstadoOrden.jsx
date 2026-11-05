@@ -1,6 +1,6 @@
 //Seguimiento del pedido: consulta el estado cada 3 segundos
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom"; // AÑADIDO: Link
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { obtenerOrden, ETIQUETAS_ESTADO } from "../../../servicios/ordenServicio";
 import { formatearPrecio } from "../../../servicios/carritoServicio";
 import "./EstadoOrden.css";

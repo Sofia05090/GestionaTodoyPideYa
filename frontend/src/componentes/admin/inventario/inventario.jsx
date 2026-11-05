@@ -7,9 +7,7 @@ import {
   crearInsumo,
   actualizarInsumo,
 } from "../../../servicios/inventarioServicio";
-// IMPORTAMOS EL SELECTOR PERSONALIZADO PARA QUE SE VEA COMO EN TU DISEÑO
 import SelectorDesplegable from "../../compartido/ui/SelectorDesplegable";
-// IMPORTAMOS EL BOTON PRIMARIO PARA QUE SE VEA IGUAL AL DE GESTION DE MENU
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import "./Inventario.css";
 
@@ -57,12 +55,12 @@ export default function Inventario() {
     };
   }, []);
 
-  //función para aumentar o disminuir el stock desde los botones + y -
+  //funcion para aumentar o disminuir el stock desde los botones
   const manejarStock = async (id, cantidadActual, cambio) => {
     //se asegura de que la cantidad nunca sea negativa
     const nuevaCantidad = Math.max(0, Number(cantidadActual) + cambio);
 
-    //actualización optimista: actualiza la pantalla de inmediato para dar sensación de rapidez
+    //actualiza la pantalla de inmediato para mejorar la experiencia del usuario
     setInsumos(
       insumos.map((i) =>
         i.id === id
@@ -80,11 +78,11 @@ export default function Inventario() {
       ),
     );
 
-    //se envía el cambio al backend
+    //se envia el cambio al backend
     await actualizarStock(id, nuevaCantidad);
   };
 
-  //función para eliminar un insumo, pidiendo confirmación previa
+  //funcion para eliminar un insumo, pidiendo confirmación previa
   const manejarEliminar = async (id) => {
     if (window.confirm("¿Estás seguro de eliminar este insumo?")) {
       await eliminarInsumo(id);
@@ -92,13 +90,13 @@ export default function Inventario() {
     }
   };
 
-  //función que se ejecuta al enviar el formulario del modal (Guardar)
+  //funcion que se ejecuta al enviar el formulario del modal (Guardar)
   const guardarInsumo = async (e) => {
     e.preventDefault(); // Evita que la página se recargue
     if (insumoEditando) {
-      await actualizarInsumo(insumoEditando.id, formData); // Si hay ID, es edición
+      await actualizarInsumo(insumoEditando.id, formData);
     } else {
-      await crearInsumo(formData); // Si no hay ID, es un insumo nuevo
+      await crearInsumo(formData);
     }
     setModalAbierto(false); // Cierra el modal
     cargarDatos(); // Recarga la tabla
@@ -107,7 +105,6 @@ export default function Inventario() {
   //función para preparar el modal cuando se va a editar
   const abrirModalEdicion = (insumo) => {
     setInsumoEditando(insumo);
-    // AQUÍ LIMPIAMOS LOS DECIMALES AL EDITAR
     setFormData({
       ...insumo,
       cantidad_actual: Number(insumo.cantidad_actual),
@@ -156,7 +153,6 @@ export default function Inventario() {
           <p>Controla existencias, mínimos y proveedores del restaurante.</p>
         </div>
 
-        {/* AQUÍ REEMPLAZAMOS EL BOTÓN NATIVO POR EL COMPONENTE BOTONPRIMARIO */}
         <BotonPrimario
           texto="+ Agregar Insumo"
           tipo="button"
@@ -205,7 +201,6 @@ export default function Inventario() {
           />
         </div>
 
-        {/* SELECTOR DESPLEGABLE PERSONALIZADO */}
         <SelectorDesplegable
           value={filtro}
           onChange={setFiltro}
@@ -264,27 +259,29 @@ export default function Inventario() {
                     </span>
                   </td>
                   <td>{insumo.proveedor}</td>
-                  <td className="acciones">
-                    <button
-                      onClick={() =>
-                        manejarStock(insumo.id, insumo.cantidad_actual, -1)
-                      }
-                    >
-                      <Minus size={16} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        manejarStock(insumo.id, insumo.cantidad_actual, 1)
-                      }
-                    >
-                      <Plus size={16} />
-                    </button>
-                    <button onClick={() => abrirModalEdicion(insumo)}>
-                      <Pencil size={16} />
-                    </button>
-                    <button onClick={() => manejarEliminar(insumo.id)}>
-                      <Trash2 size={16} />
-                    </button>
+                  <td>
+                    <div className="acciones">
+                      <button
+                        onClick={() =>
+                          manejarStock(insumo.id, insumo.cantidad_actual, -1)
+                        }
+                      >
+                        <Minus size={16} />
+                      </button>
+                      <button
+                        onClick={() =>
+                          manejarStock(insumo.id, insumo.cantidad_actual, 1)
+                        }
+                      >
+                        <Plus size={16} />
+                      </button>
+                      <button onClick={() => abrirModalEdicion(insumo)}>
+                        <Pencil size={16} />
+                      </button>
+                      <button onClick={() => manejarEliminar(insumo.id)}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

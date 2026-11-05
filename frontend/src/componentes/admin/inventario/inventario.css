@@ -1,6 +1,4 @@
-/* =========================================
-   CONTENEDOR PRINCIPAL
-========================================= */
+/*contenedor principal*/
 .inventario-container { 
   padding: 0; 
   max-width: 100%; 
@@ -9,9 +7,7 @@
   box-sizing: border-box; 
 }
 
-/* =========================================
-   ENCABEZADO (CON EFECTO DEGRADADO)
-========================================= */
+/*encabezado (con degradado)*/
 .inventario-header { 
   display: flex; 
   justify-content: space-between; 
@@ -34,9 +30,7 @@
   margin: 4px 0 0 0; 
 }
 
-/* =========================================
-   TARJETAS KPI (MÉTRICAS)
-========================================= */
+/*tarjetas*/
 .inv-kpi-grid { 
   display: grid; 
   grid-template-columns: repeat(4, 1fr); 
@@ -78,9 +72,7 @@
 .text-orange { color: #f59e0b !important; }
 .text-red { color: #ef4444 !important; }
 
-/* =========================================
-   FILTROS Y BUSCADOR
-========================================= */
+/*filtros y buscador*/
 .filtros-container { 
   display: flex; 
   gap: 1rem; 
@@ -111,7 +103,7 @@
   width: 220px;
 }
 
-/* Ocultar scroll en el menú del filtro */
+/* ocultar scroll en el menu del filtro */
 .filtro-inventario .selector-desplegable__menu {
   scrollbar-width: none !important; 
   -ms-overflow-style: none !important; 
@@ -121,9 +113,7 @@
   display: none !important; 
 }
 
-/* =========================================
-   TABLA DE INVENTARIO
-========================================= */
+/*tabla de inventario*/
 .tabla-container { 
   background: white; 
   border: 1px solid #e5e7eb; 
@@ -152,20 +142,20 @@
   display: none !important; 
 }
 
-table { 
+.tabla-container table {
   width: 100%; 
   border-collapse: collapse; 
   text-align: left; 
   table-layout: fixed; 
 }
 
-th:nth-child(1), td:nth-child(1) { width: 30%; }
-th:nth-child(2), td:nth-child(2) { width: 20%; }
-th:nth-child(3), td:nth-child(3) { width: 15%; }
-th:nth-child(4), td:nth-child(4) { width: 20%; }
-th:nth-child(5), td:nth-child(5) { width: 15%; }
+.tabla-container th:nth-child(1), .tabla-container td:nth-child(1) { width: 30%; }
+.tabla-container th:nth-child(2), .tabla-container td:nth-child(2) { width: 20%; }
+.tabla-container th:nth-child(3), .tabla-container td:nth-child(3) { width: 15%; }
+.tabla-container th:nth-child(4), .tabla-container td:nth-child(4) { width: 20%; }
+.tabla-container th:nth-child(5), .tabla-container td:nth-child(5) { width: 15%; }
 
-th { 
+.tabla-container th {
   background: #f9fafb; 
   padding: 1rem; 
   color: #6b7280; 
@@ -174,22 +164,20 @@ th {
   letter-spacing: 0.05em; 
 }
 
-td { 
+.tabla-container td {
   padding: 1rem; 
   border-bottom: 1px solid #e5e7eb; 
   vertical-align: middle; 
   word-wrap: break-word; 
 }
 
-.subtexto { 
+.tabla-container .subtexto {
   margin: 4px 0 0 0; 
   font-size: 0.8rem; 
   color: #6b7280; 
 }
 
-/* =========================================
-   BADGES (ESTADOS)
-========================================= */
+/* BADGES (ESTADOS) */
 .badge { 
   padding: 6px 12px; 
   border-radius: 999px; 
@@ -202,17 +190,18 @@ td {
 .badge-stockbajo { background: #fef3c7; color: #92400e; }
 .badge-agotado { background: #fee2e2; color: #991b1b; }
 
-/* =========================================
-   BOTONES DE ACCIÓN EN LA TABLA
-========================================= */
+/*botones de acción en la tabla*/
 .acciones { 
   display: flex; 
   gap: 4px; 
+  align-items: center;
 }
 
 .acciones button { 
   width: 30px; 
   height: 30px; 
+  flex: 0 0 30px;
+  box-sizing: border-box;
   border: 1px solid #e5e7eb; 
   border-radius: 6px; 
   background: white; 
@@ -228,9 +217,7 @@ td {
   background: #f3f4f6; 
 }
 
-/* =========================================
-   MODAL (CREAR / EDITAR)
-========================================= */
+/* modal (crear/editar) */
 .modal-fondo { 
   position: fixed; 
   inset: 0; 
@@ -308,9 +295,7 @@ td {
   cursor: pointer;
 }
 
-/* =========================================
-   SELECTOR DESPLEGABLE EN EL MODAL
-========================================= */
+/*selector desplegable*/
 .modal-selector-unidad {
   flex: 0 0 120px;
 }
