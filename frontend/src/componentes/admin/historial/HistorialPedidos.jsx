@@ -28,8 +28,6 @@ const formatearFecha = (fecha) => {
   };
 };
 
-const obtenerMesero = (pedido) => pedido.mesero || pedido.nombre_mesero || "—";
-
 const ETIQUETAS_ESTADO = {
   pendiente: "Pendiente",
   preparando: "En preparación",
@@ -78,7 +76,6 @@ export default function HistorialPedidos() {
       formatearId(pedido.id),
       pedido.id,
       pedido.mesa,
-      obtenerMesero(pedido),
     ].some((valor) => normalizarTexto(valor).includes(consulta));
     const coincideEstado = filtroEstado === "todos" || pedido.estado === filtroEstado;
     return coincideBusqueda && coincideEstado;
@@ -119,8 +116,8 @@ export default function HistorialPedidos() {
             type="search"
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
-            placeholder="Buscar por ID, mesa o mesero..."
-            aria-label="Buscar por ID, mesa o mesero"
+            placeholder="Buscar por ID o mesa..."
+            aria-label="Buscar por ID o mesa"
           />
         </label>
         <SelectorDesplegable
@@ -159,7 +156,6 @@ export default function HistorialPedidos() {
                 <tr>
                   <th scope="col">ID</th>
                   <th scope="col">Mesa</th>
-                  <th scope="col">Mesero</th>
                   <th scope="col">Fecha/Hora</th>
                   <th scope="col">Total</th>
                   <th scope="col">Pago</th>
@@ -174,7 +170,6 @@ export default function HistorialPedidos() {
                     <tr key={pedido.id}>
                       <td>{formatearId(pedido.id)}</td>
                       <td>{pedido.mesa || "—"}</td>
-                      <td>{obtenerMesero(pedido)}</td>
                       <td>
                         <span className="historial-fecha">{fecha.fecha}</span>
                         <span className="historial-hora">{fecha.hora}</span>
@@ -226,7 +221,6 @@ export default function HistorialPedidos() {
             <h2 id="historial-modal-titulo">Detalle del pedido {formatearId(pedidoSeleccionado.id)}</h2>
             <div className="historial-modal-datos">
               <p><span>Mesa</span><strong>{pedidoSeleccionado.mesa || "—"}</strong></p>
-              <p><span>Mesero</span><strong>{obtenerMesero(pedidoSeleccionado)}</strong></p>
               <p><span>Fecha/Hora</span><strong>{formatearFecha(pedidoSeleccionado.creado_en).fecha} {formatearFecha(pedidoSeleccionado.creado_en).hora}</strong></p>
               <p><span>Pago</span><strong>{pedidoSeleccionado.metodo_pago || "—"}</strong></p>
             </div>
