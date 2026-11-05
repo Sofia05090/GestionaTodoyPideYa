@@ -244,3 +244,22 @@
 }
 
 .modal-boton-cancelar:hover { background: var(--color-fondo); }
+
+/*Media Query para dispositivos móviles*/
+@media (max-width: 768px) {
+  .gestion-menu__encabezado {
+    flex-direction: column; /* el boton debajo del titulo */
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .gestion-menu__encabezado .boton-primario {
+    width: 100%; /* el boton ocupa todo el ancho */
+    white-space: nowrap; /* evita que el texto se baje a otra línea */
+    padding: 12px;
+  }
+
+  .gestion-menu__filtros {
+    padding: 16px;
+  }
+}
