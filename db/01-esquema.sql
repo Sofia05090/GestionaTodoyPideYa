@@ -10,7 +10,7 @@
   -- 2. Tabla: productos
   CREATE TABLE productos (
     id           INT AUTO_INCREMENT PRIMARY KEY,
-    categoria_id INT            NOT NULL,
+    categoria_id INT            NULL,
     nombre       VARCHAR(100)   NOT NULL,
     precio       DECIMAL(10,2)  NOT NULL,
     descripcion  TEXT,
@@ -63,7 +63,6 @@
     creado_en  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
   );
 
- 
   -- VISTAS SQL
 
 

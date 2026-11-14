@@ -10,7 +10,7 @@ function adaptarProducto(plato) {
     nombre: plato.nombre,
     descripcion: plato.descripcion ?? "",
     precio: Number(plato.precio),
-    categoria: plato.categoria ?? "Sin categoría",
+    categoria: plato.categoria ?? "",
     disponible: Boolean(plato.disponible),
     imagen: plato.urlImagen ?? plato.imagen_url ?? plato.imagen ?? null,
     ingredientes: plato.ingredientes ?? [],
@@ -30,8 +30,13 @@ export async function obtenerProductos() {
 
 // funcion para obtener las categorias de los productos del menú
 export async function obtenerCategorias() {
-  const productos = await obtenerProductos();
-  return [...new Set(productos.map((producto) => producto.categoria))];
+  const respuesta = await fetch(`${API_URL}/categorias`, { cache: "no-store" });
+  if (!respuesta.ok) {
+    const datos = await respuesta.json().catch(() => ({}));
+    throw new Error(datos.mensaje || "No se pudieron cargar las categorías");
+  }
+  const categorias = await respuesta.json();
+  return categorias.map((categoria) => categoria.nombre);
 }
 
 export function escucharCambiosMenu(alCambiar) {

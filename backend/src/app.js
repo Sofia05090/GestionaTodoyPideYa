@@ -11,6 +11,7 @@ const authRutas = require("./modulos/autenticacion/auth.rutas");
 const menuRutas = require("./modulos/menu/menu.rutas");
 const pedidosRutas = require("./modulos/pedidos/pedidos.rutas");
 const inventarioRutas = require("./modulos/inventario/inventario.rutas");
+const soporteRutas = require("./modulos/soporte/soporte.rutas");
 
 
 const crearLimiteAutenticacion = () => rateLimit({
@@ -43,6 +44,7 @@ app.use("/api/auth", authRutas);
 app.use("/api/menu", menuRutas);
 app.use("/api/pedidos", pedidosRutas);
 app.use("/api/inventario", inventarioRutas);
+app.use("/api/soporte", soporteRutas);
 
 //limitadores
 app.use("/api/pedidos", limitePedidosQr);

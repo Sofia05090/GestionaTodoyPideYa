@@ -32,7 +32,7 @@ function TarjetaPlato({ plato, alEditar, alEliminar }) {
       {/* Información principal del plato */}
       <div className="tarjeta-plato__cuerpo">
         <p className="tarjeta-plato__nombre">{plato.nombre}</p>
-        <p className="tarjeta-plato__categoria">{plato.categoria}</p>
+        <p className="tarjeta-plato__categoria">{plato.categoria || "Sin categoría"}</p>
         <p className="tarjeta-plato__descripcion">{plato.descripcion}</p>
 
         {/* Este boton permite marcar el plato como agotado o disponible

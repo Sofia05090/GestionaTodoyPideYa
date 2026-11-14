@@ -79,6 +79,28 @@
   width: 240px;
 }
 
+.gestion-menu__gestionar-categorias {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 45px;
+  padding: 0 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  color: #374151;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.gestion-menu__gestionar-categorias:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
 @media (max-width: 640px) {
   .gestion-menu__filtros {
     flex-direction: column;
@@ -89,6 +111,10 @@
 
   .gestion-menu__selector {
     flex-basis: auto;
+    width: 100%;
+  }
+
+  .gestion-menu__gestionar-categorias {
     width: 100%;
   }
 }
@@ -245,6 +271,255 @@
 
 .modal-boton-cancelar:hover { background: var(--color-fondo); }
 
+/* Gestión de categorías */
+.gestion-categorias__fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.gestion-categorias__dialogo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: min(560px, 100%);
+  max-height: min(85vh, 720px);
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(17, 24, 39, 0.22);
+}
+
+.gestion-categorias__encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.gestion-categorias__encabezado h2 {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.25rem;
+}
+
+.gestion-categorias__encabezado p {
+  margin: 6px 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.gestion-categorias__cerrar,
+.gestion-categorias__edicion button,
+.gestion-categorias__acciones button {
+  display: inline-grid;
+  flex: 0 0 36px;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.gestion-categorias__cerrar:hover,
+.gestion-categorias__edicion button:hover {
+  background: #f3f4f6;
+}
+
+.gestion-categorias__agregar,
+.gestion-categorias__edicion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.gestion-categorias__agregar input,
+.gestion-categorias__edicion input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.gestion-categorias__agregar button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #ea524b, #f49e60);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gestion-categorias__agregar button:disabled,
+.gestion-categorias__cerrar:disabled,
+.gestion-categorias__edicion button:disabled,
+.gestion-categorias__acciones button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.gestion-categorias__error {
+  margin: -8px 0 0;
+  color: #b42318;
+  font-size: 0.875rem;
+}
+
+.gestion-categorias__lista {
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.gestion-categorias__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.gestion-categorias__fila:last-child {
+  border-bottom: 0;
+}
+
+.gestion-categorias__datos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4px;
+}
+
+.gestion-categorias__datos strong {
+  overflow-wrap: anywhere;
+  color: var(--color-texto);
+}
+
+.gestion-categorias__datos span {
+  color: var(--color-texto-suave);
+  font-size: 0.8rem;
+}
+
+.gestion-categorias__acciones {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.gestion-categorias__acciones button:last-child {
+  color: #b42318;
+}
+
+.gestion-categorias__acciones button:hover {
+  background: #fef2f2;
+}
+
+.gestion-categorias__edicion {
+  width: 100%;
+}
+
+.gestion-categorias__confirmacion-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.gestion-categorias__confirmacion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(440px, 100%);
+  padding: 22px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(17, 24, 39, 0.22);
+}
+
+.gestion-categorias__confirmacion h3,
+.gestion-categorias__confirmacion p {
+  margin: 0;
+}
+
+.gestion-categorias__confirmacion h3 {
+  color: var(--color-texto);
+  font-size: 1.1rem;
+}
+
+.gestion-categorias__confirmacion p,
+.gestion-categorias__confirmacion label {
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.gestion-categorias__confirmacion select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-texto);
+  font: inherit;
+}
+
+.gestion-categorias__confirmacion-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.gestion-categorias__confirmacion-botones button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-texto);
+  font: inherit;
+  cursor: pointer;
+}
+
+.gestion-categorias__confirmacion-botones button:last-child {
+  border-color: #b42318;
+  background: #b42318;
+  color: #fff;
+}
+
+.gestion-categorias__confirmacion-botones button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 /*Media Query para dispositivos móviles*/
 @media (max-width: 768px) {
   .gestion-menu__encabezado {
@@ -262,4 +537,23 @@
   .gestion-menu__filtros {
     padding: 16px;
   }
+}
+
+@media (max-width: 480px) {
+  .gestion-categorias__fondo {
+    padding: 12px;
+  }
+
+  .gestion-categorias__dialogo {
+    padding: 18px;
+  }
+
+  .gestion-categorias__confirmacion {
+    padding: 18px;
+  }
+
+  .gestion-categorias__agregar button {
+    padding: 0 10px;
+  }
+
 }

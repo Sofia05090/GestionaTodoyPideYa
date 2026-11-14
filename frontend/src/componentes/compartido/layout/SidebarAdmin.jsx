@@ -13,7 +13,8 @@ import {
   BarChart2, // barras de estadisticas
   LogOut, // flecha de cerrar sesion
   ChefHat, // logo gorro de chef
-  Package
+  Package,
+  CircleHelp,
 } from "lucide-react";
 
 //Se crea la seccion para añadir un objeto
@@ -47,6 +48,11 @@ const LINKS_NAVEGACION = [
     ruta: "/admin/inventario",
     etiqueta: "Inventario",
     Icono: Package, 
+  },
+  {
+    ruta: "/admin/ayuda",
+    etiqueta: "Ayuda y soporte",
+    Icono: CircleHelp,
   },
 ];
 

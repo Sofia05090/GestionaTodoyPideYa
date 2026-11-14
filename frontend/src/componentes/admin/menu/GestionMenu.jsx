@@ -6,7 +6,7 @@
 //  se usa el Hook useCamposFormulario maneja todos los campos del formulario con un solo useState en vez de uno por cada campo
 
 import { useState, useEffect, useRef } from "react";
-import { Search } from "lucide-react";
+import { Check, Pencil, Plus, Search, Tags, Trash2, X } from "lucide-react";
 // Son botones y campos que también usamos en otras pantallas
 import BotonPrimario from "../../compartido/ui/BotonPrimario";
 import InputCampo from "../../compartido/ui/InputCampo";
@@ -18,6 +18,10 @@ import TarjetaPlato from "./TarjetaPlato";
 
 import {
   obtenerMenu,
+  obtenerCategorias,
+  crearCategoria,
+  actualizarCategoria,
+  eliminarCategoria,
   crearProducto,
   actualizarProducto,
   cambiarDisponibilidad,
@@ -25,41 +29,62 @@ import {
 } from "../../../servicios/menuServicio";
 import "./GestionMenu.css";
 
-// Si la API devuelve nuevas categorías, se usan automáticamente.
-const CATEGORIAS_FALLBACK = [
-  "Acompañamientos",
-  "Bebidas",
-  "Caldos",
-  "Extras y Porciones",
-  "Porciones",
-];
-
 const normalizarCategoria = (valor = "") =>
-  valor
+  String(valor ?? "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
 
+const ordenarCategorias = (lista) =>
+  [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
 // Datos iniciales para empezar un plato nuevo.
 const FORMULARIO_VACIO = {
   nombre: "",
   precio: "",
-  categoria: "Caldos",
+  categoria: "",
   descripcion: "",
   urlImagen: "",
   disponible: true,
 };
 
+const normalizarPrecioInicial = (valor) => {
+  const texto = String(valor ?? "").trim();
+  if (!texto) return "";
+
+  const numero = Number(texto);
+  return Number.isSafeInteger(numero) && numero >= 0 ? String(numero) : texto;
+};
+
+const formatearPrecioParaMostrar = (valor) => {
+  const texto = String(valor ?? "");
+  if (!/^\d+$/.test(texto)) return texto;
+
+  const numero = Number(texto);
+  return Number.isSafeInteger(numero)
+    ? new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 }).format(numero)
+    : texto;
+};
+
 function GestionMenu() {
   // Aquí guardamos la información que cambia mientras usamos la pantalla.
   const [platos, setPlatos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalCategoriasAbierto, setModalCategoriasAbierto] = useState(false);
   const [platoEditando, setPlatoEditando] = useState(null); // null = plato nuevo
   const [guardando, setGuardando] = useState(false);
+  const [guardandoCategoria, setGuardandoCategoria] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [categoriaActiva, setCategoriaActiva] = useState("Todas");
+  const [nombreCategoriaNueva, setNombreCategoriaNueva] = useState("");
+  const [categoriaEditandoId, setCategoriaEditandoId] = useState(null);
+  const [nombreCategoriaEditando, setNombreCategoriaEditando] = useState("");
+  const [errorCategorias, setErrorCategorias] = useState("");
+  const [categoriaParaEliminar, setCategoriaParaEliminar] = useState(null);
+  const [categoriaDestinoId, setCategoriaDestinoId] = useState("");
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
   const [urlImagenLocal, setUrlImagenLocal] = useState("");
   const referenciaUrlImagenLocal = useRef("");
@@ -71,19 +96,7 @@ function GestionMenu() {
     reiniciar,
   } = useCamposFormulario(FORMULARIO_VACIO);
 
-  const categoriasDisponibles = Array.from(
-    new Set(
-      platos
-        .map((plato) => plato.categoria)
-        .filter(Boolean)
-        .map((categoria) => categoria.trim()),
-    ),
-  ).sort((a, b) => a.localeCompare(b));
-
-  const categoriasSelector =
-    categoriasDisponibles.length > 0
-      ? categoriasDisponibles
-      : CATEGORIAS_FALLBACK;
+  const categoriasSelector = categorias.map((categoria) => categoria.nombre);
 
   const cargarPlatos = async () => {
     try {
@@ -98,12 +111,30 @@ function GestionMenu() {
     }
   };
 
+  const cargarCategorias = async () => {
+    const datos = await obtenerCategorias();
+    setCategorias(datos);
+    return datos;
+  };
+
+  const recargarMenuYCategorias = async () => {
+    const [datosPlatos, datosCategorias] = await Promise.all([
+      obtenerMenu(),
+      obtenerCategorias(),
+    ]);
+    setPlatos(datosPlatos);
+    setCategorias(datosCategorias);
+  };
+
   useEffect(() => {
     let activo = true;
 
-    obtenerMenu()
-      .then((datos) => {
-        if (activo) setPlatos(datos);
+    Promise.all([obtenerMenu(), obtenerCategorias()])
+      .then(([datosPlatos, datosCategorias]) => {
+        if (activo) {
+          setPlatos(datosPlatos);
+          setCategorias(datosCategorias);
+        }
       })
       .catch((error) => {
         if (activo) {
@@ -170,15 +201,15 @@ function GestionMenu() {
       setPlatoEditando(platoExistente);
       reiniciar({
         nombre: platoExistente.nombre,
-        precio: platoExistente.precio,
-        categoria: platoExistente.categoria,
+        precio: normalizarPrecioInicial(platoExistente.precio),
+        categoria: platoExistente.categoria ?? "",
         descripcion: platoExistente.descripcion || "",
         urlImagen: platoExistente.urlImagen || "",
         disponible: Boolean(platoExistente.disponible),
       });
     } else {
       setPlatoEditando(null);
-      reiniciar(); // empezamos con un formulario limpio
+      reiniciar(FORMULARIO_VACIO);
     }
 
     setModalAbierto(true);
@@ -189,16 +220,165 @@ function GestionMenu() {
     setModalAbierto(false);
     setPlatoEditando(null);
     limpiarImagenSeleccionada();
-    reiniciar();
+    reiniciar(FORMULARIO_VACIO);
+  }
+
+  function abrirGestionCategorias() {
+    setErrorCategorias("");
+    setNombreCategoriaNueva("");
+    setCategoriaEditandoId(null);
+    setModalCategoriasAbierto(true);
+  }
+
+  async function guardarCategoriaNueva(evento) {
+    evento.preventDefault();
+    const nombre = nombreCategoriaNueva.trim();
+    if (!nombre) {
+      setErrorCategorias("Escribe el nombre de la categoría.");
+      return;
+    }
+
+    setGuardandoCategoria(true);
+    setErrorCategorias("");
+    try {
+      const categoriaCreada = await crearCategoria(nombre);
+      setNombreCategoriaNueva("");
+      setCategorias((actuales) => ordenarCategorias([...actuales, categoriaCreada]));
+    } catch (error) {
+      setErrorCategorias(error.message || "No se pudo crear la categoría.");
+      setGuardandoCategoria(false);
+      return;
+    }
+
+    try {
+      await cargarCategorias();
+    } catch (error) {
+      console.error("La categoría se creó, pero no se pudo actualizar la lista:", error);
+      setErrorCategorias("La categoría se creó, pero no se pudo actualizar la lista. Recarga Gestión de Menú.");
+    } finally {
+      setGuardandoCategoria(false);
+    }
+  }
+
+  function iniciarEdicionCategoria(categoria) {
+    setCategoriaEditandoId(categoria.id);
+    setNombreCategoriaEditando(categoria.nombre);
+    setErrorCategorias("");
+  }
+
+  async function guardarEdicionCategoria(evento, categoria) {
+    evento.preventDefault();
+    const nombre = nombreCategoriaEditando.trim();
+    if (!nombre) {
+      setErrorCategorias("Escribe el nombre de la categoría.");
+      return;
+    }
+
+    setGuardandoCategoria(true);
+    setErrorCategorias("");
+    try {
+      await actualizarCategoria(categoria.id, nombre);
+      setCategorias((actuales) => ordenarCategorias(actuales.map((actual) =>
+        actual.id === categoria.id ? { ...actual, nombre } : actual
+      )));
+      setPlatos((actuales) => actuales.map((plato) =>
+        plato.categoria === categoria.nombre ? { ...plato, categoria: nombre } : plato
+      ));
+      if (categoriaActiva === categoria.nombre) setCategoriaActiva(nombre);
+      if (campos.categoria === categoria.nombre) manejarCambioCampo("categoria", nombre);
+      setCategoriaEditandoId(null);
+    } catch (error) {
+      setErrorCategorias(error.message || "No se pudo cambiar el nombre.");
+      setGuardandoCategoria(false);
+      return;
+    }
+
+    try {
+      await recargarMenuYCategorias();
+    } catch (error) {
+      console.error("La categoría se renombró, pero no se pudo actualizar la lista:", error);
+      setErrorCategorias("La categoría se renombró, pero no se pudieron actualizar los datos. Recarga Gestión de Menú.");
+    } finally {
+      setGuardandoCategoria(false);
+    }
+  }
+
+  function solicitarEliminacionCategoria(categoria) {
+    if (categorias.length < 2) {
+      setErrorCategorias("Agrega otra categoría antes de eliminar esta.");
+      return;
+    }
+    setCategoriaParaEliminar(categoria);
+    setCategoriaDestinoId("");
+    setErrorCategorias("");
+  }
+
+  async function confirmarEliminacionCategoria() {
+    if (!categoriaParaEliminar) return;
+    if (!categoriaDestinoId || Number(categoriaDestinoId) === Number(categoriaParaEliminar.id)) {
+      setErrorCategorias("Selecciona otra categoría para recibir los platos.");
+      return;
+    }
+    const categoriaDestino = categorias.find(
+      (actual) => Number(actual.id) === Number(categoriaDestinoId)
+    );
+    if (!categoriaDestino) {
+      setErrorCategorias("La categoría de destino ya no está disponible. Recarga Gestión de Menú.");
+      return;
+    }
+
+    setGuardandoCategoria(true);
+    setErrorCategorias("");
+    try {
+      const resultado = await eliminarCategoria(categoriaParaEliminar.id, categoriaDestinoId);
+      const platosReasignados = Number(resultado.platosReasignados || 0);
+
+      setCategorias((actuales) => ordenarCategorias(
+        actuales
+          .filter((actual) => Number(actual.id) !== Number(categoriaParaEliminar.id))
+          .map((actual) => Number(actual.id) === Number(categoriaDestino.id)
+            ? { ...actual, cantidadPlatos: Number(actual.cantidadPlatos) + platosReasignados }
+            : actual
+          )
+      ));
+      setPlatos((actuales) => actuales.map((plato) =>
+        plato.categoria === categoriaParaEliminar.nombre
+          ? { ...plato, categoria: categoriaDestino.nombre }
+          : plato
+      ));
+      if (categoriaActiva === categoriaParaEliminar.nombre) {
+        setCategoriaActiva(categoriaDestino.nombre);
+      }
+      if (campos.categoria === categoriaParaEliminar.nombre) {
+        manejarCambioCampo("categoria", categoriaDestino.nombre);
+      }
+      if (categoriaEditandoId === categoriaParaEliminar.id) setCategoriaEditandoId(null);
+      setCategoriaParaEliminar(null);
+      setCategoriaDestinoId("");
+    } catch (error) {
+      setErrorCategorias(error.message || "No se pudo eliminar la categoría.");
+      setGuardandoCategoria(false);
+      return;
+    }
+
+    try {
+      await recargarMenuYCategorias();
+    } catch (error) {
+      console.error("La categoría se eliminó, pero no se pudo actualizar la lista:", error);
+      setErrorCategorias("La categoría se eliminó, pero no se pudieron actualizar los datos. Recarga Gestión de Menú.");
+    } finally {
+      setGuardandoCategoria(false);
+    }
   }
   // Guardamos el plato nuevo o editado en la base de datos
   async function guardarPlato(evento) {
     evento.preventDefault();
 
-    const precio = Number(campos.precio);
+    const precioTexto = String(campos.precio ?? "").trim();
+    const precio = Number(precioTexto);
     if (
-      !campos.precio ||
-      !/^\d+$/.test(String(campos.precio).trim()) ||
+      !precioTexto ||
+      !/^\d+$/.test(precioTexto) ||
       !Number.isSafeInteger(precio) ||
       precio < 0
     ) {
@@ -210,7 +390,7 @@ function GestionMenu() {
     try {
       const datosPlato = {
         nombre: campos.nombre.trim(),
-        precio: Number(campos.precio),
+        precio,
         categoria: campos.categoria,
         descripcion: campos.descripcion.trim(),
         urlImagen: campos.urlImagen?.trim() || "", //se envia la url de la imagen si se selecciono una, si no se deja vacio
@@ -225,6 +405,12 @@ function GestionMenu() {
       }
       await cargarPlatos();
       cerrarModal();
+      try {
+        await cargarCategorias();
+      } catch (error) {
+        console.error("Error al actualizar el conteo de categorías:", error);
+        alert("El plato se guardó, pero no se pudo actualizar el conteo de categorías.");
+      }
     } catch (error) {
       console.error("Error al guardar el plato:", error);
       alert(
@@ -280,6 +466,12 @@ function GestionMenu() {
     try {
       await eliminarProducto(platoId);
       await cargarPlatos();
+      try {
+        await cargarCategorias();
+      } catch (error) {
+        console.error("Error al actualizar el conteo de categorías:", error);
+        alert("El plato se eliminó, pero no se pudo actualizar el conteo de categorías.");
+      }
     } catch (error) {
       console.error("Error al eliminar el plato:", error);
       alert("No se pudo eliminar el plato");
@@ -329,6 +521,14 @@ function GestionMenu() {
             })),
           ]}
         />
+        <button
+          className="gestion-menu__gestionar-categorias"
+          type="button"
+          onClick={abrirGestionCategorias}
+        >
+          <Tags size={17} aria-hidden="true" />
+          <span>Gestionar categorías</span>
+        </button>
       </div>
 
       {/* Lista de tarjetas de platos */}
@@ -367,6 +567,208 @@ function GestionMenu() {
           urlImagenLocal={urlImagenLocal}
         />
       )}
+
+      {modalCategoriasAbierto && (
+        <div
+          className="gestion-categorias__fondo"
+          onClick={() => {
+            if (!guardandoCategoria) setModalCategoriasAbierto(false);
+          }}
+        >
+          <section
+            className="gestion-categorias__dialogo"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="gestion-categorias-titulo"
+            onClick={(evento) => evento.stopPropagation()}
+          >
+            <header className="gestion-categorias__encabezado">
+              <div>
+                <h2 id="gestion-categorias-titulo">Categorías del menú</h2>
+                <p>Crea y renombra categorías. Al eliminar una, sus platos se trasladarán a la categoría que elijas.</p>
+              </div>
+              <button
+                className="gestion-categorias__cerrar"
+                type="button"
+                aria-label="Cerrar gestión de categorías"
+                disabled={guardandoCategoria}
+                onClick={() => setModalCategoriasAbierto(false)}
+              >
+                <X size={20} />
+              </button>
+            </header>
+
+            <form className="gestion-categorias__agregar" onSubmit={guardarCategoriaNueva}>
+              <input
+                type="text"
+                value={nombreCategoriaNueva}
+                onChange={(evento) => setNombreCategoriaNueva(evento.target.value)}
+                placeholder="Nombre de la nueva categoría"
+                aria-label="Nombre de la nueva categoría"
+                maxLength={50}
+                disabled={guardandoCategoria}
+              />
+              <button type="submit" disabled={guardandoCategoria || !nombreCategoriaNueva.trim()}>
+                <Plus size={17} aria-hidden="true" />
+                <span>Agregar</span>
+              </button>
+            </form>
+
+            {errorCategorias && (
+              <p className="gestion-categorias__error" role="alert">
+                {errorCategorias}
+              </p>
+            )}
+
+            <div className="gestion-categorias__lista">
+              {categorias.map((categoria) => {
+                const estaEditando = categoriaEditandoId === categoria.id;
+                const cantidadPlatos = Number(categoria.cantidadPlatos || 0);
+
+                return (
+                  <div className="gestion-categorias__fila" key={categoria.id}>
+                    {estaEditando ? (
+                      <form
+                        className="gestion-categorias__edicion"
+                        onSubmit={(evento) => guardarEdicionCategoria(evento, categoria)}
+                      >
+                        <input
+                          type="text"
+                          value={nombreCategoriaEditando}
+                          onChange={(evento) => setNombreCategoriaEditando(evento.target.value)}
+                          aria-label={`Nuevo nombre para ${categoria.nombre}`}
+                          maxLength={50}
+                          autoFocus
+                          disabled={guardandoCategoria}
+                        />
+                        <button
+                          type="submit"
+                          aria-label="Guardar nombre de categoría"
+                          title="Guardar"
+                          disabled={guardandoCategoria}
+                        >
+                          <Check size={18} />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Cancelar edición de categoría"
+                          title="Cancelar"
+                          disabled={guardandoCategoria}
+                          onClick={() => setCategoriaEditandoId(null)}
+                        >
+                          <X size={18} />
+                        </button>
+                      </form>
+                    ) : (
+                      <>
+                        <div className="gestion-categorias__datos">
+                          <strong>{categoria.nombre}</strong>
+                          <span>
+                            {cantidadPlatos} {cantidadPlatos === 1 ? "plato asociado" : "platos asociados"}
+                          </span>
+                        </div>
+                        <div className="gestion-categorias__acciones">
+                          <button
+                            type="button"
+                            aria-label={`Editar ${categoria.nombre}`}
+                            title="Editar categoría"
+                            disabled={guardandoCategoria}
+                            onClick={() => iniciarEdicionCategoria(categoria)}
+                          >
+                            <Pencil size={17} />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Eliminar ${categoria.nombre}`}
+                            title={categorias.length < 2
+                              ? "Agrega otra categoría antes de eliminar esta"
+                              : "Eliminar categoría"}
+                            disabled={guardandoCategoria || categorias.length < 2}
+                            onClick={() => solicitarEliminacionCategoria(categoria)}
+                          >
+                            <Trash2 size={17} />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {categoriaParaEliminar && (
+              <div
+                className="gestion-categorias__confirmacion-fondo"
+                onClick={(evento) => {
+                  if (evento.target === evento.currentTarget && !guardandoCategoria) {
+                    setCategoriaParaEliminar(null);
+                    setCategoriaDestinoId("");
+                    setErrorCategorias("");
+                  }
+                }}
+              >
+                <section
+                  className="gestion-categorias__confirmacion"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="gestion-categorias-confirmar-titulo"
+                  onClick={(evento) => evento.stopPropagation()}
+                >
+                  <h3 id="gestion-categorias-confirmar-titulo">Eliminar categoría</h3>
+                  <p>
+                    Elige la categoría a la que se moverán los {Number(categoriaParaEliminar.cantidadPlatos || 0)} platos asociados a “{categoriaParaEliminar.nombre}”.
+                    Se conservarán sus demás datos.
+                  </p>
+                  <label htmlFor="categoria-destino">Categoría de destino</label>
+                  <select
+                    id="categoria-destino"
+                    value={categoriaDestinoId}
+                    onChange={(evento) => {
+                      setCategoriaDestinoId(evento.target.value);
+                      setErrorCategorias("");
+                    }}
+                    disabled={guardandoCategoria}
+                  >
+                    <option value="">Selecciona una categoría</option>
+                    {categorias
+                      .filter((actual) => actual.id !== categoriaParaEliminar.id)
+                      .map((actual) => (
+                        <option key={actual.id} value={actual.id}>
+                          {actual.nombre}
+                        </option>
+                      ))}
+                  </select>
+                  {errorCategorias && (
+                    <p className="gestion-categorias__error" role="alert">
+                      {errorCategorias}
+                    </p>
+                  )}
+                  <div className="gestion-categorias__confirmacion-botones">
+                    <button
+                      type="button"
+                      disabled={guardandoCategoria}
+                      onClick={() => {
+                        setCategoriaParaEliminar(null);
+                        setCategoriaDestinoId("");
+                        setErrorCategorias("");
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      disabled={guardandoCategoria || !categoriaDestinoId}
+                      onClick={confirmarEliminacionCategoria}
+                    >
+                      {guardandoCategoria ? "Eliminando..." : "Eliminar y trasladar"}
+                    </button>
+                  </div>
+                </section>
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </div>
   );
 }
@@ -384,6 +786,8 @@ function ModalPlato({
   alSeleccionarImagen,
   urlImagenLocal,
 }) {
+  const [precioEnfocado, setPrecioEnfocado] = useState(false);
+
   return (
     // Al hacer clic fuera del formulario se cierra
     <div className="modal-fondo" onClick={alCerrar}>
@@ -410,13 +814,19 @@ function ModalPlato({
             etiqueta="Precio (COP)"
             id="precio"
             nombre="precio"
-            tipo="number"
-            valor={campos.precio}
-            alCambiar={(e) => manejarCambio("precio", e.target.value)}
-            placeholder="Ej: 14000"
+            tipo="text"
+            modoEntrada="numeric"
+            valor={precioEnfocado
+              ? campos.precio
+              : formatearPrecioParaMostrar(campos.precio)}
+            alCambiar={(evento) => {
+              const valor = evento.target.value.replace(/\./g, "").trim();
+              if (!valor || /^\d+$/.test(valor)) manejarCambio("precio", valor);
+            }}
+            alEnfocar={() => setPrecioEnfocado(true)}
+            alDesenfocar={() => setPrecioEnfocado(false)}
+            placeholder="Ej: 14.000"
             requerido
-            min="0"
-            step="1"
           />
 
           {/* seleccion de categoria */}
@@ -429,6 +839,7 @@ function ModalPlato({
               onChange={(e) => manejarCambio("categoria", e.target.value)}
               className="modal-selector"
             >
+              <option value="" disabled>Seleccionar categoría</option>
               {categoriasSelector.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}

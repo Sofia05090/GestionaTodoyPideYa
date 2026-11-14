@@ -4,6 +4,112 @@ const menuRepositorio = require("./menu.repositorio");
 const { notificarCambioMenu } = require("./menu.eventos");
 const { precioValido } = require("./menu.validaciones");
 
+const obtenerIdCategoria = (valor) => {
+  const id = Number(valor);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
+};
+
+const normalizarNombreCategoria = (nombre) =>
+  nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+const validarNombreCategoria = (req, res) => {
+  const nombre = typeof req.body?.nombre === "string" ? req.body.nombre.trim() : "";
+  if (!nombre) {
+    res.status(400).json({ mensaje: "El nombre de la categoría es obligatorio" });
+    return null;
+  }
+  if (nombre.length > 50) {
+    res.status(400).json({ mensaje: "El nombre de la categoría no puede superar 50 caracteres" });
+    return null;
+  }
+  if (normalizarNombreCategoria(nombre) === "todas") {
+    res.status(400).json({ mensaje: "“Todas” está reservado para el filtro de categorías" });
+    return null;
+  }
+  if (normalizarNombreCategoria(nombre) === "sin categoria") {
+    res.status(400).json({
+      mensaje: "“Sin categoría” se muestra en los platos que no tienen una categoría asignada",
+    });
+    return null;
+  }
+  return nombre;
+};
+
+const responderErrorCategoria = (res, error, accion) => {
+  if (error.code === "CATEGORIA_NO_ENCONTRADA") {
+    return res.status(404).json({ mensaje: error.message });
+  }
+  if (error.code === "CATEGORIA_DESTINO_INVALIDO") {
+    return res.status(400).json({ mensaje: error.message });
+  }
+  if (error.code === "ER_DUP_ENTRY") {
+    return res.status(409).json({
+      mensaje: "Ya existe una categoría con ese nombre",
+    });
+  }
+  console.error(`Error al ${accion} la categoría:`, error);
+  return res.status(500).json({ mensaje: `No se pudo ${accion} la categoría` });
+};
+
+const obtenerCategorias = async (_req, res) => {
+  try {
+    res.set("Cache-Control", "no-store");
+    res.json(await menuRepositorio.obtenerCategorias());
+  } catch (error) {
+    console.error("Error al obtener las categorías:", error);
+    res.status(500).json({ mensaje: "Error al obtener las categorías" });
+  }
+};
+
+const crearCategoria = async (req, res) => {
+  const nombre = validarNombreCategoria(req, res);
+  if (!nombre) return;
+
+  try {
+    const id = await menuRepositorio.crearCategoria(nombre);
+    notificarCambioMenu();
+    res.status(201).json({ id, nombre, cantidadPlatos: 0 });
+  } catch (error) {
+    responderErrorCategoria(res, error, "crear");
+  }
+};
+
+const actualizarCategoria = async (req, res) => {
+  const id = obtenerIdCategoria(req.params.id);
+  if (!id) return res.status(400).json({ mensaje: "El identificador de categoría no es válido" });
+  const nombre = validarNombreCategoria(req, res);
+  if (!nombre) return;
+
+  try {
+    await menuRepositorio.actualizarCategoria(id, nombre);
+    notificarCambioMenu();
+    res.json({ mensaje: "Categoría actualizada correctamente" });
+  } catch (error) {
+    responderErrorCategoria(res, error, "actualizar");
+  }
+};
+
+const eliminarCategoria = async (req, res) => {
+  const id = obtenerIdCategoria(req.params.id);
+  if (!id) return res.status(400).json({ mensaje: "El identificador de categoría no es válido" });
+  const categoriaDestinoId = obtenerIdCategoria(req.body?.categoriaDestinoId);
+  if (!categoriaDestinoId) {
+    return res.status(400).json({ mensaje: "Debes elegir una categoría de destino" });
+  }
+
+  try {
+    const categoria = await menuRepositorio.eliminarCategoria(id, categoriaDestinoId);
+    notificarCambioMenu();
+    res.json({
+      mensaje: `Categoría eliminada; los platos asociados pasaron a “${categoria.categoriaDestino}”`,
+      categoriaDestino: categoria.categoriaDestino,
+      platosReasignados: categoria.platosReasignados,
+    });
+  } catch (error) {
+    responderErrorCategoria(res, error, "eliminar");
+  }
+};
+
 //GET /api/menu devuelve todos los productos 
 const obtenerMenu = async (req, res) => {
   try {
@@ -34,7 +140,8 @@ const agregarProducto = async (req, res) => {
     res.status(201).json({ id, ...req.body, urlImagen });
   } catch (error) {
     console.error("Error al agregar el producto:", error);
-    res.status(500).json({ error: "Error al guardar el producto" });
+    const codigo = error.code === "CATEGORIA_NO_ENCONTRADA" ? 400 : 500;
+    res.status(codigo).json({ mensaje: error.message || "Error al guardar el producto" });
   }
 };
 
@@ -53,8 +160,7 @@ const agregarProductos = async (req, res) => {
     res.status(201).json({ insertados: productos.length, productos });
   } catch (error) {
     console.error("Error al agregar los productos:", error);
-    const esCategoriaInexistente = error.message.startsWith("La categoría indicada no existe:");
-    res.status(esCategoriaInexistente ? 400 : 500).json({ error: error.message });
+    res.status(error.code === "CATEGORIA_NO_ENCONTRADA" ? 400 : 500).json({ error: error.message });
   }
 };
 
@@ -74,7 +180,8 @@ const actualizarProducto = async (req, res) => {
     res.json({ mensaje: "Producto actualizado correctamente" });
   } catch (error) {
     console.error("Error al actualizar el producto:", error);
-    res.status(500).json({ error: "Error al actualizar el producto" });
+    const codigo = error.code === "CATEGORIA_NO_ENCONTRADA" ? 400 : 500;
+    res.status(codigo).json({ mensaje: error.message || "Error al actualizar el producto" });
   }
 };
 
@@ -107,6 +214,10 @@ const eliminarProducto = async (req, res) => {
 };
 
 module.exports = {
+  obtenerCategorias,
+  crearCategoria,
+  actualizarCategoria,
+  eliminarCategoria,
   obtenerMenu,
   agregarProducto,
   agregarProductos,
