@@ -9,7 +9,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY src ./src
 
 # Carpeta de imagenes subidas por el admin (se monta como volumen en docker-compose)
-RUN mkdir -p imagenes/platos && chown -R node:node imagenes
+RUN mkdir -p imagenes/platos datos-soporte && chown -R node:node imagenes datos-soporte
 
 USER node
 EXPOSE 5000

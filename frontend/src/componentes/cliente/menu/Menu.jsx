@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Search } from "lucide-react";
 import {
   escucharCambiosMenu,
+  obtenerCategorias,
   obtenerProductos,
 } from "../../../servicios/menuClienteServicio";
 import { formatearPrecio } from "../../../servicios/carritoServicio";
@@ -38,12 +39,16 @@ function Menu() {
     async function cargarDatos() {
       const solicitud = ++solicitudActual;
       try {
-        const productosObtenidos = await obtenerProductos();
+        const [productosObtenidos, categoriasObtenidas] = await Promise.all([
+          obtenerProductos(),
+          obtenerCategorias(),
+        ]);
         if (!activo || solicitud !== solicitudActual) return;
         setProductos(productosObtenidos);
-        setCategorias([
-          ...new Set(productosObtenidos.map((producto) => producto.categoria)),
-        ]);
+        setCategorias(categoriasObtenidas);
+        setCategoriaActiva((actual) =>
+          categoriasObtenidas.includes(actual) ? actual : "Todos"
+        );
         setError("");
       } catch (e) {
         if (activo && solicitud === solicitudActual) {

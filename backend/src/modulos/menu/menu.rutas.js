@@ -48,6 +48,10 @@ const limitarCambiosMenu = rateLimit({
 });
 
 // GET  /api/menu lista productos (público: lo ve el cliente también)
+router.get("/categorias", menuControlador.obtenerCategorias);
+router.post("/categorias", verificarToken, limitarCambiosMenu, menuControlador.crearCategoria);
+router.put("/categorias/:id", verificarToken, limitarCambiosMenu, menuControlador.actualizarCategoria);
+router.delete("/categorias/:id", verificarToken, limitarCambiosMenu, menuControlador.eliminarCategoria);
 router.get("/eventos", menuEventos.conectarCliente);
 router.get("/", menuControlador.obtenerMenu);
 

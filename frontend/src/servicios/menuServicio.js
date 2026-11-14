@@ -35,6 +35,46 @@ export const obtenerMenu = async () => {
     if (!respuesta.ok) throw new Error(datos.mensaje || "Error al obtener el menú");
     return datos;
 };
+
+export const obtenerCategorias = async () => {
+    const respuesta = await fetch(`${API_URL}/categorias`, { cache: "no-store" });
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "Error al obtener las categorías");
+    return datos;
+};
+
+export const crearCategoria = async (nombre) => {
+    const respuesta = await fetch(`${API_URL}/categorias`, {
+        method: "POST",
+        headers: encabezadosAdmin(),
+        body: JSON.stringify({ nombre }),
+    });
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "Error al crear la categoría");
+    return datos;
+};
+
+export const actualizarCategoria = async (id, nombre) => {
+    const respuesta = await fetch(`${API_URL}/categorias/${id}`, {
+        method: "PUT",
+        headers: encabezadosAdmin(),
+        body: JSON.stringify({ nombre }),
+    });
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "Error al actualizar la categoría");
+    return datos;
+};
+
+export const eliminarCategoria = async (id, categoriaDestinoId) => {
+    const respuesta = await fetch(`${API_URL}/categorias/${id}`, {
+        method: "DELETE",
+        headers: encabezadosAdmin(),
+        body: JSON.stringify({ categoriaDestinoId }),
+    });
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "Error al eliminar la categoría");
+    return datos;
+};
 //se exporta la funcion para agregar un producto, que recibe un objeto producto con los datos del producto a agregar
 export const crearProducto = async (producto, imagen) => {
     const respuesta = await fetch(API_URL, {

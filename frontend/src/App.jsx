@@ -10,6 +10,7 @@ import PedidosActivos from "./componentes/admin/pedidos/PedidosActivos";
 import HistorialPedidos from "./componentes/admin/historial/HistorialPedidos";
 import Estadisticas from "./componentes/admin/estadisticas/Estadisticas";
 import Inventario from "./componentes/admin/inventario/Inventario";
+import AyudaSoporte from "./componentes/admin/soporte/AyudaSoporte";
 import RutaProtegida from "./componentes/admin/dashboard/RutaProtegida";
 import Inicio from "./componentes/cliente/inicio/Inicio";
 import Menu from "./componentes/cliente/menu/Menu";
@@ -50,6 +51,7 @@ function App() {
               <Route path="historial" element={<HistorialPedidos />} />
               <Route path="estadisticas" element={<Estadisticas />} />
               <Route path="inventario" element={<Inventario />} />
+              <Route path="ayuda" element={<AyudaSoporte />} />
             </Route>
           </Route>
 

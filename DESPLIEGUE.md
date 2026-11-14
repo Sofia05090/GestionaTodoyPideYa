@@ -59,3 +59,5 @@ docker compose exec db sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" gestione
 ```
 
 Los archivos de `db/` **no** se vuelven a ejecutar si la base ya existe. Los cambios de esquema posteriores se aplican a mano con `docker compose exec -T db mysql ...`.
+
+El número de soporte se guarda en el volumen Docker `soporte_config`, no en SQL. El volumen conserva el valor al reconstruir o reiniciar el backend.

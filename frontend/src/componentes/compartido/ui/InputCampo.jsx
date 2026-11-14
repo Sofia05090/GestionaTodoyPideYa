@@ -16,6 +16,9 @@ function InputCampo({
     maxLength,
     step,
     autoComplete,
+    modoEntrada,
+    alEnfocar,
+    alDesenfocar,
 }) {
     return (
         <div className="input-campo-grupo">
@@ -39,6 +42,9 @@ function InputCampo({
                 maxLength={maxLength}
                 step={step}
                 autoComplete={autoComplete}
+                inputMode={modoEntrada}
+                onFocus={alEnfocar}
+                onBlur={alDesenfocar}
                 className="input-campo-input"
             />
 

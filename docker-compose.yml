@@ -39,9 +39,11 @@ services:
       NOMBRE_BD: ${NOMBRE_BD:-gestione_todo_y_pida_ya}
       JWT_SECRETO: ${JWT_SECRETO:?Falta JWT_SECRETO en .env}
       REGISTRO_ADMIN_TOKEN: ${REGISTRO_ADMIN_TOKEN:?Falta REGISTRO_ADMIN_TOKEN en .env}
+      ARCHIVO_CONFIGURACION_SOPORTE: /app/datos-soporte/configuracion.json
       TZ: America/Bogota
     volumes:
       - uploads:/app/imagenes
+      - soporte_config:/app/datos-soporte
     depends_on:
       db:
         condition: service_healthy
@@ -75,3 +77,4 @@ services:
 volumes:
   db_data:
   uploads:
+  soporte_config:

@@ -81,6 +81,36 @@
     outline-offset: 4px;
 }
 
+.inicio-soporte {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 160ms ease;
+}
+
+.inicio-soporte:hover {
+    opacity: 0.82;
+    text-decoration: underline;
+}
+
+.inicio-soporte:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+.inicio-soporte-error {
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+}
+
 @media (max-width: 600px) {
     .inicio-contenido {
         width: min(100%, 460px);
