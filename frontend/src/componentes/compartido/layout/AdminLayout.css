@@ -61,3 +61,9 @@
     padding: 1rem; /*reducir el padding para aumentar el espacio para el contenido*/
   }
 }
+
+@media (max-width: 760px) {
+  .admin-contenido {
+    padding-top: 4.5rem;
+  }
+}
