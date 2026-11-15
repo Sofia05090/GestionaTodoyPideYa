@@ -15,6 +15,8 @@ import {
   ChefHat, // logo gorro de chef
   Package,
   CircleHelp,
+  Menu,
+  X,
 } from "lucide-react";
 
 //Se crea la seccion para añadir un objeto
@@ -62,6 +64,7 @@ function SidebarAdmin() {
   
   // Estado para abrir/cerrar el modal. (Dejé tu useState del correo intacto)
   const [modalPerfilAbierto, setModalPerfilAbierto] = useState(false);
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
 
   // Cerramos la sesion y volvemos a la pantalla de inicio de sesion
   function cerrarSesion() {
@@ -73,7 +76,30 @@ function SidebarAdmin() {
   const inicialAvatar = correoAdmin.charAt(0).toUpperCase();
 
   return (
-    <aside className="sidebar">
+    <>
+      <button
+        className="sidebar-toggle"
+        type="button"
+        aria-label={menuMovilAbierto ? "Cerrar navegación" : "Abrir navegación"}
+        aria-expanded={menuMovilAbierto}
+        aria-controls="sidebar-admin"
+        onClick={() => setMenuMovilAbierto(!menuMovilAbierto)}
+      >
+        {menuMovilAbierto ? <X size={21} /> : <Menu size={21} />}
+      </button>
+      {menuMovilAbierto && (
+        <button
+          className="sidebar-overlay"
+          type="button"
+          aria-label="Cerrar panel lateral"
+          onClick={() => setMenuMovilAbierto(false)}
+        />
+      )}
+      <aside
+        id="sidebar-admin"
+        className={`sidebar${menuMovilAbierto ? " sidebar--movil-abierto" : ""}`}
+        aria-label="Navegación del administrador"
+      >
       {/*estructura del nav */}
       {/*Cabeza del menu de navegacion*/}
       <div className="sidebar-cabecera">
@@ -95,6 +121,7 @@ function SidebarAdmin() {
             className={({ isActive }) =>
               isActive ? "sidebar-link sidebar-link--activo" : "sidebar-link"
             }
+            onClick={() => setMenuMovilAbierto(false)}
           >
             <Icono size={18} />
             <span>{etiqueta}</span>
@@ -134,7 +161,8 @@ function SidebarAdmin() {
         <ModalPerfil alCerrar={() => setModalPerfilAbierto(false)} />
       )}
 
-    </aside>
+      </aside>
+    </>
   );
 }
 

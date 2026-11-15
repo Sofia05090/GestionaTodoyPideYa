@@ -7,9 +7,12 @@
 }
 
 .ayuda-soporte__encabezado h1 {
-  color: var(--color-texto);
   font-size: 1.8rem;
   font-weight: 700;
+  background: linear-gradient(90deg, #ea524b, #f49e60);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .ayuda-soporte__encabezado p {
